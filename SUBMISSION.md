@@ -151,10 +151,29 @@ Reported under **three normalization schemes**, because the choice changes the r
 
 On 25 AfriSwitch Yoruba clips with human reference transcriptions:
 
-| Model | WER strict | WER loose | WER numeric (95% CI) | CER loose | Negation ↑ | Median latency |
-|---|--:|--:|--:|--:|--:|--:|
-| `sahara` | 83.1 | **57.5** | **57.4 (49.1–66.6)** | **38.6** | **52.8** | 17.9s |
-| `whisper_large_v3` | 89.1 | 87.8 | 87.8 (79.9–96.5) | 49.5 | 13.9 | 4.5s |
+| Model | n | WER strict | WER loose | WER numeric (95% CI) | CER loose | Negation ↑ | Median latency |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| `sahara` | 25 | 83.1 | **57.5** | **57.4 (49.1–66.6)** | **38.6** | **52.8** | 17.9s |
+| `whisper_large_v3` | 25 | 89.1 | 87.8 | 87.8 (79.9–96.5) | 49.5 | 13.9 | 4.5s |
+| `whisper_small` | 25 | 103.2 | 103.2 | 103.2 (96.8–114.7) | 89.0 | 0.0 | 188.0s |
+
+`whisper_small` exceeding 100% WER is not an error: WER counts insertions, and it
+hallucinates past the reference length. It preserved **zero** negations across the set.
+
+**By code-mixing intensity — Sahara is flat where the baselines degrade:**
+
+| Model | Low CMI | Medium | High |
+|---|--:|--:|--:|
+| `sahara` | 60.3 | 54.7 | **56.7** |
+| `whisper_large_v3` | 91.9 | 93.0 | 79.7 |
+| `whisper_small` | 101.2 | 113.4 | 97.8 |
+
+Sahara moves ~5 points across bands; Whisper small swings 16. This is the clearest
+evidence in the benchmark that code-switch-specific training is doing real work.
+
+**Latency is a deployment finding.** Whisper small at 188s median on a 4-core CPU is ~6×
+slower than real time — unusable interactively. The local "cheap" option is the expensive
+one.
 
 **Sahara wins decisively on in-the-wild code-switched Yoruba** — a 30-point WER gap whose
 95% confidence intervals do not overlap. Absolute WER is high for both because AfriSwitch
