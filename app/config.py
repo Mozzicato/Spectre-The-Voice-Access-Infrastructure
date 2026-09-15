@@ -41,7 +41,15 @@ INTRON_STATUS_RPM = 100
 INTRON_MAX_AUDIO_SECONDS = 120
 
 # --- Hugging Face ---
-HF_TOKEN = (os.getenv("HF_TOKEN") or os.getenv("HUGGING_FACE_HUB_TOKEN") or "").strip()
+# Accept every common spelling so a correctly-provisioned token is never missed
+# just because it was named differently in .env.
+HF_TOKEN = next(
+    (v.strip() for v in (
+        os.getenv("HF_TOKEN"), os.getenv("HF_API_KEY"),
+        os.getenv("HUGGING_FACE_HUB_TOKEN"), os.getenv("HUGGINGFACE_TOKEN"),
+    ) if v and v.strip()),
+    "",
+)
 
 # --- datasets ---
 AFRISWITCH_REPO = "intronhealth/AfriSwitch"

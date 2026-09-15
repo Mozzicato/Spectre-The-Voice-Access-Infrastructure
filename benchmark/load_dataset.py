@@ -38,8 +38,9 @@ def _first_present(row: dict, *names, default=None):
 
 def build_afriswitch(languages: list[str], per_language: int, out: Path) -> Path:
     """Stream AfriSwitch, decode audio to 16 kHz mono WAV, emit a manifest."""
-    import soundfile as sf
-    from datasets import load_dataset, get_dataset_config_names
+    from datasets import Audio, load_dataset, get_dataset_config_names
+
+    from app.asr import to_wav16k_mono
 
     token = config.HF_TOKEN
     if not token:
@@ -80,6 +81,10 @@ def build_afriswitch(languages: list[str], per_language: int, out: Path) -> Path
         ds = load_dataset(
             config.AFRISWITCH_REPO, cfg, split="test", streaming=True, token=token
         )
+        # decode=False hands back the raw encoded bytes instead of a decoded waveform.
+        # datasets 5.x would otherwise demand torchcodec to decode audio; ffmpeg already
+        # does that job here, and skipping the decode keeps peak RAM per clip tiny.
+        ds = ds.cast_column("audio", Audio(decode=False))
 
         taken = 0
         for i, item in enumerate(ds):
@@ -95,11 +100,20 @@ def build_afriswitch(languages: list[str], per_language: int, out: Path) -> Path
             audio_id = f"afriswitch_{cfg}_{i:05d}"
             dest = audio_dir / f"{audio_id}.wav"
             if not dest.exists():
+                raw_bytes = audio.get("bytes")
+                src_name = audio.get("path") or f"{audio_id}.wav"
+                if not raw_bytes:
+                    continue
+                suffix = Path(src_name).suffix or ".wav"
+                tmp = audio_dir / f"_raw_{audio_id}{suffix}"
                 try:
-                    sf.write(dest, audio["array"], audio["sampling_rate"], subtype="PCM_16")
+                    tmp.write_bytes(raw_bytes)
+                    to_wav16k_mono(tmp, dest)
                 except Exception as exc:
                     print(f"  ! {audio_id}: {exc}", file=sys.stderr)
                     continue
+                finally:
+                    tmp.unlink(missing_ok=True)
 
             rows.append({
                 "audio_id": audio_id,
@@ -110,6 +124,7 @@ def build_afriswitch(languages: list[str], per_language: int, out: Path) -> Path
                 "num_switch_points": _first_present(
                     item, "num_switch_points", "switch_points", "n_switches"
                 ),
+                "duration": _first_present(item, "duration"),
                 "source": "afriswitch",
                 "domain": "general",
             })
