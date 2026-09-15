@@ -1,0 +1,25 @@
+# Core pipeline
+requests>=2.31
+python-dotenv>=1.0
+pandas>=2.0
+jiwer>=3.0            # WER / CER
+soundfile>=0.12       # audio IO for local CTC models
+
+# Datasets (AfriSwitch is manually gated - request access + set HF_TOKEN)
+datasets>=3.0
+huggingface_hub>=0.25
+
+# Local ASR baselines (CPU)
+faster-whisper>=1.0   # Whisper small, int8 on CPU
+transformers>=4.44    # MMS-300M Yoruba-English (wav2vec2 CTC)
+torch>=2.2            # CPU build is sufficient
+
+# API / UI
+fastapi>=0.110
+uvicorn>=0.29
+python-multipart>=0.0.9
+
+# NOTE: ffmpeg must be on PATH (audio conversion + duration probing).
+#   Windows: winget install Gyan.FFmpeg
+#   macOS:   brew install ffmpeg
+#   Linux:   apt install ffmpeg

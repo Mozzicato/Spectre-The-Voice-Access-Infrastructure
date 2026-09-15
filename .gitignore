@@ -1,0 +1,19 @@
+# secrets
+.env
+*.key
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# data & artifacts
+data/demo/audio/*.wav
+data/cache/
+benchmark/results/*.jsonl
+benchmark/results/*.csv
+!benchmark/results/.gitkeep
+reports/*.csv
+models/
+*.log

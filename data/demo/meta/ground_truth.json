@@ -1,0 +1,206 @@
+{
+  "_README": "Ground truth for the downstream benchmark, derived from the MUST SAY facts in docs/RECORDING_GUIDE.md. Fields listed here are the ones the speaker was required to state, so they are stable even though speakers improvise the wording around them. Fields the scenario deliberately omits are absent here and are NOT counted against a model - they are there to exercise the missing-information detector.",
+
+  "legal_01": {
+    "domain": "legal", "case_type": "tenancy_dispute", "route": "legal_aid_review",
+    "amounts": [240000], "references": [],
+    "fields": {
+      "parties": ["landlord", "tenant"],
+      "dates": ["2021", "February"],
+      "amounts": ["240000"],
+      "events": ["landlord asked the speaker to leave the house"]
+    }
+  },
+  "legal_02": {
+    "domain": "legal", "case_type": "tenancy_dispute", "route": "legal_aid_review",
+    "amounts": [150000], "references": [],
+    "fields": {
+      "location": "Akoko Road, Yaba",
+      "amounts": ["150000"],
+      "parties": ["landlord", "tenant"],
+      "events": ["caution deposit has not been returned"]
+    }
+  },
+  "legal_03": {
+    "domain": "legal", "case_type": "employment_dispute", "route": "labour_review",
+    "amounts": [85000], "references": [],
+    "fields": {
+      "location": "Ikeja",
+      "amounts": ["85000"],
+      "parties": ["employer", "supervisor Mr. Adeyemi"],
+      "events": ["salary unpaid from March"]
+    }
+  },
+  "legal_04": {
+    "domain": "legal", "case_type": "employment_dispute", "route": "labour_review",
+    "amounts": [], "references": [],
+    "fields": {
+      "parties": ["employer"],
+      "events": ["dismissed without warning or query letter"],
+      "dates": ["2023"]
+    }
+  },
+  "legal_05": {
+    "domain": "legal", "case_type": "consumer_dispute",
+    "route": "consumer_protection_review",
+    "amounts": [320000], "references": [],
+    "fields": {
+      "location": "Alaba market",
+      "amounts": ["320000"],
+      "dates": ["12 August"],
+      "events": ["generator stopped working within one week of purchase"]
+    }
+  },
+  "legal_06": {
+    "domain": "legal", "case_type": "consumer_dispute",
+    "route": "consumer_protection_review",
+    "amounts": [180000], "references": [],
+    "fields": {
+      "location": "Ibadan",
+      "amounts": ["180000"],
+      "events": ["contractor did not return to finish the roof work"]
+    }
+  },
+
+  "fin_01": {
+    "domain": "financial", "case_type": "failed_transfer",
+    "route": "bank_dispute_workflow",
+    "amounts": [45000], "references": ["0987654321"],
+    "fields": {
+      "institution": ["GTBank", "Access Bank"],
+      "transaction_type": "transfer",
+      "amount": 45000,
+      "transaction_reference": "0987654321",
+      "reported_status": "recipient did not receive the money",
+      "problem": "money was debited but the recipient never received it"
+    }
+  },
+  "fin_02": {
+    "domain": "financial", "case_type": "unauthorized_transaction",
+    "route": "fraud_review",
+    "amounts": [72500], "references": [],
+    "fields": {
+      "institution": ["Zenith Bank"],
+      "amount": 72500,
+      "date": "3 September",
+      "reported_status": "not authorized by the account holder",
+      "problem": "money left the account without authorization"
+    }
+  },
+  "fin_03": {
+    "domain": "financial", "case_type": "failed_atm_withdrawal",
+    "route": "bank_dispute_workflow",
+    "amounts": [20000, 60000], "references": [],
+    "fields": {
+      "institution": ["First Bank"],
+      "transaction_type": "withdrawal",
+      "amount": 60000,
+      "reported_status": "not reversed",
+      "problem": "account debited but the ATM did not dispense cash"
+    }
+  },
+  "fin_04": {
+    "domain": "financial", "case_type": "unauthorized_transaction",
+    "route": "fraud_review",
+    "amounts": [110000], "references": [],
+    "fields": {
+      "institution": ["UBA"],
+      "amount": 110000,
+      "date": "28 August",
+      "reported_status": "reported but not resolved",
+      "problem": "card used without the account holder's permission"
+    }
+  },
+  "fin_05": {
+    "domain": "financial", "case_type": "payment_dispute",
+    "route": "merchant_dispute_workflow",
+    "amounts": [35000], "references": [],
+    "fields": {
+      "amount": 35000,
+      "date": "5 September",
+      "reported_status": "goods not received",
+      "problem": "paid for an online order that was never delivered"
+    }
+  },
+  "fin_06": {
+    "domain": "financial", "case_type": "loan_dispute",
+    "route": "lending_conduct_review",
+    "amounts": [50000, 62000, 89000], "references": [],
+    "fields": {
+      "amount": 89000,
+      "transaction_type": "loan",
+      "reported_status": "overcharged",
+      "problem": "lender deducted more than the agreed repayment amount"
+    }
+  },
+
+  "pub_01": {
+    "domain": "public_service", "case_type": "streetlight_failure",
+    "route": "public_infrastructure_complaint",
+    "amounts": [], "references": [],
+    "fields": {
+      "location": "Adeniyi Jones, Ikeja",
+      "problem": "streetlight has not been working",
+      "duration": "about three weeks",
+      "previous_reports": ["reported to the local government two times"],
+      "impact": ["robberies on the street", "two people robbed last week"]
+    }
+  },
+  "pub_02": {
+    "domain": "public_service", "case_type": "water_supply",
+    "route": "utility_complaint",
+    "amounts": [500], "references": [],
+    "fields": {
+      "problem": "no water supply to the area",
+      "duration": "since the beginning of August",
+      "agency": "Water Corporation",
+      "previous_reports": ["visited their office three times"],
+      "impact": ["about forty houses affected", "buying water at 500 naira per jerrican"]
+    }
+  },
+  "pub_03": {
+    "domain": "public_service", "case_type": "road_or_drainage",
+    "route": "public_infrastructure_complaint",
+    "amounts": [], "references": [],
+    "fields": {
+      "location": "Ajegunle",
+      "problem": "blocked drainage causing flooding into homes",
+      "duration": "since last rainy season",
+      "previous_reports": ["reported to the local government since March"],
+      "impact": ["about two hundred families affected"]
+    }
+  },
+  "pub_04": {
+    "domain": "public_service", "case_type": "electricity_supply",
+    "route": "utility_complaint",
+    "amounts": [48000], "references": [],
+    "fields": {
+      "problem": "estimated bill far higher than the electricity actually supplied",
+      "duration": "last month",
+      "previous_reports": ["applied for a prepaid meter since January"],
+      "impact": ["only about six days of supply in the month"]
+    }
+  },
+  "pub_05": {
+    "domain": "public_service", "case_type": "waste_management",
+    "route": "sanitation_complaint",
+    "amounts": [2000], "references": [],
+    "fields": {
+      "problem": "waste collectors have not come to the street",
+      "duration": "over a month",
+      "previous_reports": ["called them four times with no answer"],
+      "impact": ["refuse piling up and smelling"]
+    }
+  },
+  "pub_06": {
+    "domain": "public_service", "case_type": "health_facility",
+    "route": "health_service_complaint",
+    "amounts": [], "references": [],
+    "fields": {
+      "problem": "no doctor on duty at the primary health centre",
+      "duration": "three visits this month",
+      "previous_reports": ["visited three times this month"],
+      "impact": ["people travelling from far places cannot be seen"]
+    }
+  }
+}

@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Voice Access Infrastructure</title>
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --panel2:#1e222b; --line:#2a2f3a;
+    --ink:#e8eaf0; --mut:#9aa3b2; --acc:#4ade80; --warn:#fbbf24; --bad:#f87171;
+    --brand:#60a5fa;
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:860px;margin:0 auto;padding:24px 16px 64px}
+  h1{font-size:22px;margin:0 0 4px;letter-spacing:-.02em}
+  .sub{color:var(--mut);font-size:13px;margin-bottom:22px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    padding:18px;margin-bottom:16px}
+  .step{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);
+    margin-bottom:12px;font-weight:600}
+  .domains{display:flex;gap:10px;flex-wrap:wrap}
+  .domain{flex:1 1 180px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:12px;padding:14px;cursor:pointer;text-align:left;color:var(--ink);
+    font:inherit;transition:.15s}
+  .domain:hover{border-color:var(--brand)}
+  .domain[aria-pressed="true"]{border-color:var(--acc);background:#1b2a22}
+  .domain b{display:block;font-size:15px;margin-bottom:2px}
+  .domain span{color:var(--mut);font-size:12px}
+  .mic{display:flex;flex-direction:column;align-items:center;gap:12px;padding:16px 0}
+  .micbtn{width:96px;height:96px;border-radius:50%;border:none;cursor:pointer;
+    background:var(--brand);color:#06121f;font-size:36px;transition:.15s}
+  .micbtn:hover{transform:scale(1.04)}
+  .micbtn.rec{background:var(--bad);color:#2a0a0a;animation:pulse 1.2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+  .hint{color:var(--mut);font-size:13px;text-align:center}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  select,input[type=text],textarea{background:var(--panel2);color:var(--ink);
+    border:1px solid var(--line);border-radius:9px;padding:9px 11px;font:inherit}
+  textarea{width:100%;min-height:76px;resize:vertical}
+  button.go{background:var(--acc);color:#06210f;border:none;border-radius:9px;
+    padding:10px 18px;font:inherit;font-weight:600;cursor:pointer}
+  button.go:disabled{opacity:.5;cursor:not-allowed}
+  .ghost{background:transparent;border:1px solid var(--line);color:var(--ink);
+    border-radius:9px;padding:9px 14px;font:inherit;cursor:pointer}
+  .quote{background:var(--panel2);border-left:3px solid var(--brand);border-radius:0 9px 9px 0;
+    padding:12px 14px;font-size:15px;white-space:pre-wrap}
+  .kv{display:grid;grid-template-columns:150px 1fr;gap:8px 14px;font-size:14px}
+  .kv dt{color:var(--mut)}
+  .kv dd{margin:0}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;
+    font-weight:600;letter-spacing:.03em}
+  .ok{background:#123021;color:var(--acc)}
+  .no{background:#3a2412;color:var(--warn)}
+  ul.clean{list-style:none;padding:0;margin:0}
+  ul.clean li{padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
+  ul.clean li:last-child{border-bottom:none}
+  .q{background:var(--panel2);border:1px solid var(--line);border-radius:10px;
+    padding:12px;margin-bottom:9px}
+  .q b{display:block;margin-bottom:3px}
+  .q em{color:var(--mut);font-style:normal;font-size:12px}
+  .meter{height:7px;background:var(--panel2);border-radius:99px;overflow:hidden;margin:8px 0}
+  .meter i{display:block;height:100%;background:var(--acc)}
+  .warn{background:#3a2412;border:1px solid #6b4a1c;border-radius:9px;padding:10px;
+    font-size:13px;color:var(--warn);margin-top:10px}
+  .note{color:var(--mut);font-size:12px;margin-top:14px;line-height:1.5}
+  .spin{display:inline-block;width:13px;height:13px;border:2px solid var(--line);
+    border-top-color:var(--brand);border-radius:50%;animation:sp .7s linear infinite;
+    vertical-align:-2px;margin-right:7px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  [hidden]{display:none!important}
+  @media(max-width:520px){.kv{grid-template-columns:1fr}.kv dt{margin-top:6px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Voice Access Infrastructure</h1>
+  <div class="sub">Tell us what happened, in your own words. We turn it into a case.</div>
+
+  <div class="card">
+    <div class="step">Step 1 &mdash; What is this about?</div>
+    <div class="domains" id="domains">
+      <button class="domain" data-d="" aria-pressed="true"><b>Auto-detect</b><span>Let the system decide</span></button>
+      <button class="domain" data-d="legal" aria-pressed="false"><b>Legal</b><span>Rent, work, purchases</span></button>
+      <button class="domain" data-d="financial" aria-pressed="false"><b>Financial</b><span>Banks, transfers, cards</span></button>
+      <button class="domain" data-d="public_service" aria-pressed="false"><b>Public service</b><span>Roads, water, light</span></button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="step">Step 2 &mdash; Speak, upload, or type</div>
+    <div class="mic">
+      <button class="micbtn" id="mic" title="Record">&#127908;</button>
+      <div class="hint" id="michint">Tap to speak &mdash; Pidgin, Yoruba, Igbo or Hausa mixed with English is fine</div>
+    </div>
+    <div class="row" style="margin-bottom:10px">
+      <label class="hint">Speech model
+        <select id="model"></select>
+      </label>
+      <label class="hint">Language
+        <select id="lang"></select>
+      </label>
+      <input type="file" id="file" accept="audio/*" class="ghost">
+    </div>
+    <textarea id="text" placeholder="&hellip;or type/paste a transcript here"></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="go" id="run">Compile case</button>
+      <span id="status" class="hint"></span>
+    </div>
+  </div>
+
+  <div class="card" id="heard" hidden>
+    <div class="step">Step 3 &mdash; We heard</div>
+    <div class="quote" id="transcript"></div>
+    <div class="note" id="asrmeta"></div>
+  </div>
+
+  <div class="card" id="result" hidden>
+    <div class="step">Step 4 &mdash; Your case</div>
+    <h2 id="ctype" style="margin:0 0 2px;font-size:19px"></h2>
+    <div class="hint" id="croute"></div>
+    <div class="meter"><i id="bar" style="width:0%"></i></div>
+    <div class="hint" id="cmeta"></div>
+
+    <h3 style="font-size:13px;margin:18px 0 8px;color:var(--mut)">YOU REPORTED</h3>
+    <dl class="kv" id="fields"></dl>
+
+    <div id="evwrap" hidden>
+      <h3 style="font-size:13px;margin:18px 0 8px;color:var(--mut)">EVIDENCE</h3>
+      <ul class="clean" id="evidence"></ul>
+    </div>
+
+    <div id="misswrap" hidden>
+      <h3 style="font-size:13px;margin:18px 0 8px;color:var(--mut)">STILL MISSING</h3>
+      <ul class="clean" id="missing"></ul>
+    </div>
+
+    <div id="qwrap" hidden>
+      <h3 style="font-size:13px;margin:18px 0 8px;color:var(--mut)">WE NEED TO ASK</h3>
+      <div id="questions"></div>
+    </div>
+
+    <h3 style="font-size:13px;margin:18px 0 8px;color:var(--mut)">NEXT STEPS</h3>
+    <ul class="clean" id="steps"></ul>
+
+    <div id="warns"></div>
+    <div class="row" style="margin-top:16px">
+      <button class="ghost" id="dl">Download case (JSON)</button>
+    </div>
+    <div class="note" id="disc"></div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let domain = "", packet = null, recorder = null, chunks = [], recording = false;
+
+fetch("/api/config").then(r => r.json()).then(c => {
+  $("#model").innerHTML = c.models.map(m =>
+    `<option value="${m}"${m === "sahara" ? " selected" : ""}>${m}</option>`).join("");
+  $("#lang").innerHTML = c.languages.map(l =>
+    `<option value="${l}"${l === "pidgin" ? " selected" : ""}>${l}</option>`).join("");
+});
+
+$("#domains").addEventListener("click", e => {
+  const b = e.target.closest(".domain"); if (!b) return;
+  [...document.querySelectorAll(".domain")].forEach(x =>
+    x.setAttribute("aria-pressed", String(x === b)));
+  domain = b.dataset.d;
+});
+
+$("#mic").addEventListener("click", async () => {
+  if (recording) { recorder.stop(); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    recorder = new MediaRecorder(stream); chunks = [];
+    recorder.ondataavailable = e => chunks.push(e.data);
+    recorder.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      recording = false; $("#mic").classList.remove("rec");
+      $("#michint").textContent = "Tap to speak";
+      await runPipeline(new File(chunks, "clip.webm", { type: chunks[0]?.type || "audio/webm" }));
+    };
+    recorder.start(); recording = true;
+    $("#mic").classList.add("rec");
+    $("#michint").textContent = "Recording&hellip; tap again to stop";
+  } catch (err) {
+    setStatus("Microphone unavailable &mdash; use the file picker or type instead.", true);
+  }
+});
+
+$("#file").addEventListener("change", e => {
+  if (e.target.files[0]) runPipeline(e.target.files[0]);
+});
+
+$("#run").addEventListener("click", () => {
+  const t = $("#text").value.trim();
+  if (t) compile(t, null);
+  else if ($("#file").files[0]) runPipeline($("#file").files[0]);
+  else setStatus("Record, choose a file, or type a transcript first.", true);
+});
+
+function setStatus(msg, isErr) {
+  $("#status").innerHTML = msg;
+  $("#status").style.color = isErr ? "var(--bad)" : "var(--mut)";
+}
+
+async function runPipeline(file) {
+  setStatus('<span class="spin"></span>Transcribing&hellip;');
+  $("#run").disabled = true;
+  const fd = new FormData();
+  fd.append("audio", file);
+  fd.append("model", $("#model").value);
+  fd.append("language", $("#lang").value);
+  try {
+    const r = await fetch("/api/transcribe", { method: "POST", body: fd });
+    if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
+    const d = await r.json();
+    $("#asrmeta").textContent = `${d.model} · ${d.language} · ${d.latency_s}s`;
+    await compile(d.transcript, d);
+  } catch (e) {
+    setStatus("Transcription failed: " + e.message, true);
+    $("#run").disabled = false;
+  }
+}
+
+async function compile(transcript, asr) {
+  $("#transcript").textContent = transcript;
+  $("#heard").hidden = false;
+  if (!asr) $("#asrmeta").textContent = "typed transcript (no ASR)";
+  setStatus('<span class="spin"></span>Compiling case&hellip;');
+  $("#run").disabled = true;
+  const fd = new FormData();
+  fd.append("transcript", transcript);
+  if (domain) fd.append("domain", domain);
+  try {
+    const r = await fetch("/api/compile", { method: "POST", body: fd });
+    if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
+    render(await r.json());
+    setStatus("Done.");
+  } catch (e) {
+    setStatus("Compile failed: " + e.message, true);
+  }
+  $("#run").disabled = false;
+}
+
+function render(p) {
+  packet = p;
+  $("#result").hidden = false;
+  $("#ctype").textContent = p.case_type.replace(/_/g, " ").toUpperCase();
+  $("#croute").textContent = p.routing.label;
+  const pc = Math.round(p.completeness * 100);
+  $("#bar").style.width = pc + "%";
+  $("#bar").style.background = pc >= 75 ? "var(--acc)" : "var(--warn)";
+  $("#cmeta").textContent =
+    `${pc}% complete · confidence ${p.confidence} · ${p.compiler} · status ${p.status}`;
+
+  $("#fields").innerHTML = Object.entries(p.user_reported)
+    .filter(([, v]) => v !== null && v !== "" && !(Array.isArray(v) && !v.length))
+    .map(([k, v]) => `<dt>${k.replace(/_/g, " ")}</dt><dd>${
+      Array.isArray(v) ? v.map(esc).join("<br>") : esc(v)}</dd>`).join("")
+    || "<dt>&mdash;</dt><dd>nothing extracted</dd>";
+
+  const ev = p.evidence;
+  $("#evwrap").hidden = !(ev.mentioned.length || ev.supplied.length);
+  $("#evidence").innerHTML = [
+    ...ev.mentioned.map(m => `<li><span class="pill ${
+      ev.outstanding.includes(m) ? "no" : "ok"}">${
+      ev.outstanding.includes(m) ? "not supplied" : "mentioned"}</span> ${esc(m)}</li>`),
+    ...ev.supplied.map(s => `<li><span class="pill ok">uploaded</span> ${esc(s)}</li>`),
+  ].join("");
+
+  $("#misswrap").hidden = !p.missing_information.length;
+  $("#missing").innerHTML = p.missing_information
+    .map(m => `<li><span class="pill no">missing</span> ${m.replace(/_/g, " ")}</li>`).join("");
+
+  $("#qwrap").hidden = !p.outstanding_questions.length;
+  $("#questions").innerHTML = p.outstanding_questions
+    .map(q => `<div class="q"><b>${esc(q.question)}</b><em>${esc(q.why)}</em></div>`).join("");
+
+  $("#steps").innerHTML = p.routing.next_steps.map(s => `<li>${esc(s)}</li>`).join("");
+  $("#warns").innerHTML = (p.provenance.warnings || [])
+    .map(w => `<div class="warn">${esc(w)}</div>`).join("");
+  $("#disc").textContent = p.disclaimer + " Extracted by " + p.provenance.extractor + ".";
+  $("#result").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+$("#dl").addEventListener("click", () => {
+  if (!packet) return;
+  const blob = new Blob([JSON.stringify(packet, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `${packet.domain}_${packet.case_type}.json`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+</script>
+</body>
+</html>

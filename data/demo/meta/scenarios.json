@@ -1,0 +1,22 @@
+{
+  "legal_01": {"domain": "legal", "language": "pidgin", "language_pair": "Pidgin-English", "cmi_band": "heavy", "noise": "quiet", "scenario_type": "tenancy", "device": "phone", "tier": 1},
+  "legal_02": {"domain": "legal", "language": "yoruba", "language_pair": "Yoruba-English", "cmi_band": "medium", "noise": "quiet", "scenario_type": "tenancy_deposit", "device": "phone", "tier": 2},
+  "legal_03": {"domain": "legal", "language": "pidgin", "language_pair": "Pidgin-English", "cmi_band": "heavy", "noise": "street", "scenario_type": "employment_wages", "device": "phone", "tier": 2},
+  "legal_04": {"domain": "legal", "language": "igbo", "language_pair": "Igbo-English", "cmi_band": "medium", "noise": "quiet", "scenario_type": "wrongful_dismissal", "device": "phone", "tier": 3},
+  "legal_05": {"domain": "legal", "language": "pidgin", "language_pair": "Pidgin-English", "cmi_band": "medium", "noise": "quiet", "scenario_type": "consumer_goods", "device": "phone", "tier": 3},
+  "legal_06": {"domain": "legal", "language": "yoruba", "language_pair": "Yoruba-English", "cmi_band": "low", "noise": "quiet", "scenario_type": "consumer_service", "device": "phone", "tier": 3},
+
+  "fin_01": {"domain": "financial", "language": "pidgin", "language_pair": "Pidgin-English", "cmi_band": "heavy", "noise": "quiet", "scenario_type": "failed_transfer", "device": "phone", "tier": 1},
+  "fin_02": {"domain": "financial", "language": "yoruba", "language_pair": "Yoruba-English", "cmi_band": "medium", "noise": "quiet", "scenario_type": "unauthorized_debit", "device": "phone", "tier": 2},
+  "fin_03": {"domain": "financial", "language": "pidgin", "language_pair": "Pidgin-English", "cmi_band": "heavy", "noise": "street", "scenario_type": "failed_atm", "device": "phone", "tier": 2},
+  "fin_04": {"domain": "financial", "language": "igbo", "language_pair": "Igbo-English", "cmi_band": "medium", "noise": "quiet", "scenario_type": "card_fraud", "device": "phone", "tier": 3},
+  "fin_05": {"domain": "financial", "language": "pidgin", "language_pair": "Pidgin-English", "cmi_band": "medium", "noise": "quiet", "scenario_type": "merchant_dispute", "device": "phone", "tier": 3},
+  "fin_06": {"domain": "financial", "language": "hausa", "language_pair": "Hausa-English", "cmi_band": "low", "noise": "quiet", "scenario_type": "loan_overcharge", "device": "phone", "tier": 3},
+
+  "pub_01": {"domain": "public_service", "language": "yoruba", "language_pair": "Yoruba-English", "cmi_band": "heavy", "noise": "quiet", "scenario_type": "streetlight", "device": "phone", "tier": 1},
+  "pub_02": {"domain": "public_service", "language": "pidgin", "language_pair": "Pidgin-English", "cmi_band": "medium", "noise": "street", "scenario_type": "water_supply", "device": "phone", "tier": 2},
+  "pub_03": {"domain": "public_service", "language": "pidgin", "language_pair": "Pidgin-English", "cmi_band": "heavy", "noise": "street", "scenario_type": "road_drainage", "device": "phone", "tier": 2},
+  "pub_04": {"domain": "public_service", "language": "igbo", "language_pair": "Igbo-English", "cmi_band": "medium", "noise": "quiet", "scenario_type": "electricity_billing", "device": "phone", "tier": 3},
+  "pub_05": {"domain": "public_service", "language": "yoruba", "language_pair": "Yoruba-English", "cmi_band": "medium", "noise": "street", "scenario_type": "waste_collection", "device": "phone", "tier": 3},
+  "pub_06": {"domain": "public_service", "language": "hausa", "language_pair": "Hausa-English", "cmi_band": "low", "noise": "quiet", "scenario_type": "health_facility", "device": "phone", "tier": 3}
+}
