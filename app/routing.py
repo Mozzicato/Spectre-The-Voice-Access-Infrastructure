@@ -90,6 +90,23 @@ HIGH_RISK_FIELDS = {
 }
 
 
+def _readable(value) -> str:
+    """Render an extracted value for a human to confirm out loud.
+
+    The extractor may return an amount as a bare number, a string, or a small object like
+    {"amount": 24000, "description": "yearly rent"}. Printing that dict straight into a
+    confirmation prompt shows the speaker raw Python, so each shape is flattened to plain
+    words instead.
+    """
+    if isinstance(value, dict):
+        parts = [str(v) for k, v in value.items() if v not in (None, "", [], {})]
+        return " - ".join(parts) if parts else ""
+    if isinstance(value, (list, tuple)):
+        rendered = [_readable(v) for v in value]
+        return ", ".join(r for r in rendered if r)
+    return str(value)
+
+
 def verification_required(case: "CompiledCase") -> list[dict]:
     """High-risk values that were extracted and should be read back to the speaker."""
     checks: list[dict] = []
@@ -97,7 +114,7 @@ def verification_required(case: "CompiledCase") -> list[dict]:
         value = case.fields.get(name)
         if value in (None, "", [], {}):
             continue
-        shown = ", ".join(str(v) for v in value) if isinstance(value, list) else str(value)
+        shown = _readable(value)
         checks.append({
             "field": name,
             "value": shown,

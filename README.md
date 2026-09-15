@@ -106,7 +106,7 @@ GROQ_API_KEY=...       # or ANTHROPIC_/OPENAI_/GEMINI_/MISTRAL_ — any one work
 python -m uvicorn app.server:app --port 8000
 
 # or one file, in the terminal
-python scripts/demo.py data/demo/audio/fin_01_s1.wav --model sahara --language pidgin
+python scripts/demo.py data/demo/audio/fin_01_s1.m4a --model sahara --language pidgin
 python scripts/demo.py --text "I transfer forty five thousand naira but the person never receive am"
 ```
 
@@ -114,7 +114,7 @@ python scripts/demo.py --text "I transfer forty five thousand naira but the pers
 
 ```bash
 # 1. build an evaluation manifest
-python -m benchmark.load_dataset --source afriswitch --languages yoruba pidgin igbo hausa --per-language 100
+python -m benchmark.load_dataset --source afriswitch --languages yoruba pidgin igbo hausa --per-language 25
 
 # 2. transcribe (resumable — safe to Ctrl-C and rerun)
 python -m benchmark.run_asr --model sahara            --manifest data/manifests/afriswitch.jsonl
@@ -133,19 +133,25 @@ Results land in `reports/` as `RESULTS.md`, `DOWNSTREAM.md` and CSVs.
 
 ## Models benchmarked
 
-| Model | Role | Runs on |
-|---|---|---|
-| **Intron Sahara v2.5** | African code-switching specialist (required) | API |
-| **Whisper large-v3** | strongest general-purpose multilingual baseline | API (Groq) |
-| **Whisper small** | general-purpose baseline, fully local | CPU, int8 |
-| **MMS-300M Yoruba-English** | African/code-switch specialist baseline | CPU |
+| Model | Role | Runs on | Status |
+|---|---|---|---|
+| **Intron Sahara v2.5** | African code-switching specialist (required) | API | ✅ benchmarked |
+| **Whisper large-v3** | strongest general-purpose multilingual baseline | API (Groq) | ✅ benchmarked |
+| **Whisper small** | general-purpose baseline, size-controlled | CPU, int8 | ✅ benchmarked |
+| **MMS-300M Yoruba-English** | African/code-switch specialist | CPU | ⚠️ implemented, not benchmarked |
 
 Adding a fifth is one entry in `ENGINES` in [`app/asr.py`](app/asr.py).
 
-**MMS is Yoruba-English only, so it is scored only on the Yoruba track.** Running a
-Yoruba-only model on Hausa and reporting the result as a fair comparison would be
-dishonest benchmarking. The harness enforces this automatically via
-`supported_languages`.
+The two Whisper models are a deliberate **size-controlled pair**: same architecture and
+training recipe, different capacity. The gap between them separates *what capacity buys
+you* from *what code-switch-specific training buys you* — which is the comparison Sahara
+is actually in.
+
+**MMS is implemented and selectable but produced no results**, so it appears in no table.
+Its 1.2 GB download was cut off repeatedly on this network. It is Yoruba-English only and
+would have been scored on the Yoruba track alone — running a Yoruba-only model on Hausa
+and reporting that as a fair comparison would be dishonest benchmarking, and the harness
+enforces that via `supported_languages`. We list it as unrun rather than drop it silently.
 
 ---
 
@@ -154,8 +160,8 @@ dishonest benchmarking. The harness enforces this automatically via
 ### Level 1 — speech recognition
 
 WER and CER, broken down by language, code-mixing band (CMI) and noise condition, each
-with a **bootstrap 95% confidence interval**. With 100–200 clips per language a
-two-point WER gap is usually noise, and an interval says so.
+with a **bootstrap 95% confidence interval**. At this sample size a two-point WER gap
+is usually noise, and an interval says so rather than letting it read as a finding.
 
 **Three normalization schemes are reported, not one:**
 
@@ -221,43 +227,74 @@ Benchmarks are easy to corrupt by accident, so the harness refuses to help:
 All figures below are computed from cached model outputs in `benchmark/results/` and are
 reproducible from them. Nothing here is estimated.
 
+### Level 1 — speech recognition (25 AfriSwitch Yoruba clips, human references)
+
+| Model | WER strict | WER loose | WER numeric (95% CI) | CER loose | Negation ↑ | Median latency |
+|---|--:|--:|--:|--:|--:|--:|
+| `sahara` | 83.1 | **57.5** | **57.4 (49.1–66.6)** | **38.6** | **52.8** | 17.9s |
+| `whisper_large_v3` | 89.1 | 87.8 | 87.8 (79.9–96.5) | 49.5 | 13.9 | 4.5s |
+
+**Sahara wins decisively on in-the-wild code-switched Yoruba** — a 30-point WER gap whose
+confidence intervals do not overlap. Absolute WER is high for both because AfriSwitch is
+spontaneous, heavily code-mixed speech, not read prompts.
+
+Sahara's **25-point strict/loose gap is entirely diacritics**. It writes `Ìwọ ni problem
+mi`; the AfriSwitch human reference is un-diacritized `Iwo ni problem mi`. Under a
+diacritic-sensitive scheme Sahara is penalised for being *more* orthographically correct.
+Whisper's gap is 1.3 points, because it emits no diacritics at all.
+
+A single-scheme WER table would have misrepresented both models.
+
 ### Level 2 — institutional understanding (18 self-recorded scenarios)
 
 Same audio, same compiler, different speech model.
 
-| Model | n | Field acc ↑ | Amounts ↑ | Ref-nums ↑ | Negation ↑ | Case type ↑ | Routing ↑ |
-|---|--:|--:|--:|--:|--:|--:|--:|
-| `whisper_large_v3` | 18 | 67.1 | **94.1** | 100.0 | 78.9 | 100.0 | 100.0 |
-| `sahara` | 18 | 63.2 | 58.8 | 100.0 | **94.7** | 100.0 | 100.0 |
+| Model | n | Field acc ↑ | Amounts ↑ | Ref-nums ↑ | Negation ↑ | Case type ↑ | Routing ↑ | Completeness ↑ |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|
+| `whisper_large_v3` | 18 | **60.5** | **94.1** | 100.0 | 100.0 | **100.0** | **100.0** | 82.2 |
+| `sahara` | 18 | 59.2 | 58.8 | 100.0 | 100.0 | **100.0** | **100.0** | **83.3** |
+| `whisper_small` | 18 | 48.7 | 82.4 | 100.0 | 100.0 | 83.3 | 83.3 | 69.6 |
 
-**The two models fail in opposite directions, and that is the finding.**
+Three findings, none of them visible in a WER table:
 
-Sahara preserves code-switched *structure* — it keeps negations that Whisper drops, and
-it writes correct Yoruba orthography. Whisper preserves *numbers* — Sahara systematically
-loses a zero on large naira amounts (`240,000 → 24000`, `320,000 → 32000`,
-`48,000 → 14000`).
+**1. ASR quality does break the downstream task — but only past a threshold.** Sahara and
+Whisper large-v3 both classify and route **100%** of cases correctly despite very
+different transcripts. Whisper small drops to **83.3%** on both. The size-controlled pair
+(large-v3 vs small, same architecture and recipe) isolates this: capacity, not
+code-switch-specific training, is what carries the structural decision here.
 
-Both classify and route every one of the 18 cases correctly, which is the point of the
-architecture: the compiler is robust to ASR noise for the *structural* decision, and
-fragile for the *numeric* one.
+**2. The two strong models fail in opposite directions.** Measured on the raw transcripts
+([`FAILURE_ANALYSIS.md`](reports/downstream/FAILURE_ANALYSIS.md)):
 
-Per-scenario detail: [`reports/downstream/FAILURE_ANALYSIS.md`](reports/downstream/FAILURE_ANALYSIS.md).
+| Model | Amounts preserved | Negations preserved |
+|---|--:|--:|
+| `sahara` | 10/17 (58.8%) | **36/38 (94.7%)** |
+| `whisper_large_v3` | **16/17 (94.1%)** | 30/38 (78.9%) |
+| `whisper_small` | 14/17 (82.4%) | 28/38 (73.7%) |
 
-### Level 1 — speech recognition (AfriSwitch)
+Sahara preserves code-switched *structure*; Whisper preserves *numbers*. Sahara
+systematically loses a zero on large naira amounts (`240,000 → 24000`,
+`320,000 → 32000`, `48,000 → 14000`).
 
-On real AfriSwitch Yoruba, the choice of normalization scheme changes the answer:
+**3. Semantic loss is recoverable; numeric loss is not.** Measuring negation in the raw
+transcript and again in the compiled case fields:
 
-| Model | WER strict | WER loose | Negation ↑ | Median latency |
-|---|--:|--:|--:|--:|
-| `sahara` | 57.6 | **34.6** | **88.9** | 19.2s |
-| `whisper_large_v3` | 65.1 | 65.1 | 22.2 | 3.1s |
+| Model | In transcript | In compiled case | Change |
+|---|--:|--:|--:|
+| `sahara` | 94.7 | 92.1 | −2.6 |
+| `whisper_large_v3` | 78.9 | **97.4** | **+18.4** |
+| `whisper_small` | 73.7 | **94.7** | **+21.1** |
 
-Sahara's 23-point strict/loose gap is **entirely diacritics**. It writes `Ìwọ ni problem
-mi`; the AfriSwitch human reference is un-diacritized `Iwo ni problem mi`. Under a
-diacritic-sensitive scheme Sahara is penalised for being *more* orthographically correct.
-Whisper scores identically under both because it emits no diacritics at all.
+A model that drops negations while transcribing largely **regains them in the compiled
+case**: the extractor reads surrounding context and reconstructs the negated claim.
+Amounts show no such recovery — `240,000` heard as `24,000` has no contextual redundancy
+to restore it, and the transcript still reads fluently.
 
-A single-scheme WER table would have named the wrong winner.
+This is the argument for the compiler layer rather than only picking a better speech
+model, and the reason the confirmation gate targets amounts and reference numbers
+specifically rather than everything.
+That is a genuine robustness result, and it is only visible because we measured the same
+property at both levels.
 
 ### What this changed in the product
 

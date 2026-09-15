@@ -8,51 +8,51 @@ dropped zero the same as a dropped filler word.
 
 ## Amounts
 
-| Scenario | Expected | `sahara` | `whisper_large_v3` |
-|---|---|--:|--:|
-| `fin_01` | 45,000 | 1/1 | 1/1 |
-| `fin_02` | 72,500 | 1/1 | 1/1 |
-| `fin_03` | 20,000, 60,000 | 0/2 ❌ | 2/2 |
-| `fin_04` | 110,000 | 0/1 ❌ | 1/1 |
-| `fin_05` | 35,000 | 1/1 | 1/1 |
-| `fin_06` | 50,000, 62,000, 89,000 | 2/3 ❌ | 3/3 |
-| `legal_01` | 240,000 | 0/1 ❌ | 1/1 |
-| `legal_02` | 150,000 | 1/1 | 1/1 |
-| `legal_03` | 85,000 | 1/1 | 1/1 |
-| `legal_05` | 320,000 | 0/1 ❌ | 1/1 |
-| `legal_06` | 180,000 | 1/1 | 1/1 |
-| `pub_02` | 500 | 1/1 | 1/1 |
-| `pub_04` | 48,000 | 0/1 ❌ | 1/1 |
-| `pub_05` | 2,000 | 1/1 | 0/1 ❌ |
+| Scenario | Expected | `sahara` | `whisper_large_v3` | `whisper_small` |
+|---|---|--:|--:|--:|
+| `fin_01` | 45,000 | 1/1 | 1/1 | 1/1 |
+| `fin_02` | 72,500 | 1/1 | 1/1 | 0/1 ❌ |
+| `fin_03` | 20,000, 60,000 | 0/2 ❌ | 2/2 | 2/2 |
+| `fin_04` | 110,000 | 0/1 ❌ | 1/1 | 1/1 |
+| `fin_05` | 35,000 | 1/1 | 1/1 | 1/1 |
+| `fin_06` | 50,000, 62,000, 89,000 | 2/3 ❌ | 3/3 | 3/3 |
+| `legal_01` | 240,000 | 0/1 ❌ | 1/1 | 1/1 |
+| `legal_02` | 150,000 | 1/1 | 1/1 | 0/1 ❌ |
+| `legal_03` | 85,000 | 1/1 | 1/1 | 1/1 |
+| `legal_05` | 320,000 | 0/1 ❌ | 1/1 | 1/1 |
+| `legal_06` | 180,000 | 1/1 | 1/1 | 1/1 |
+| `pub_02` | 500 | 1/1 | 1/1 | 1/1 |
+| `pub_04` | 48,000 | 0/1 ❌ | 1/1 | 1/1 |
+| `pub_05` | 2,000 | 1/1 | 0/1 ❌ | 0/1 ❌ |
 
 ## Reference numbers
 
-| Scenario | Expected | `sahara` | `whisper_large_v3` |
-|---|---|--:|--:|
-| `fin_01` | 0987654321 | 1/1 | 1/1 |
+| Scenario | Expected | `sahara` | `whisper_large_v3` | `whisper_small` |
+|---|---|--:|--:|--:|
+| `fin_01` | 0987654321 | 1/1 | 1/1 | 1/1 |
 
 ## Negation
 
-| Scenario | Expected | `sahara` | `whisper_large_v3` |
-|---|---|--:|--:|
-| `fin_01` | 2 | 2/2 | 2/2 |
-| `fin_02` | 1 | 1/1 | 1/1 (+2 spurious) |
-| `fin_03` | 2 | 2/2 (+1 spurious) | 2/2 (+1 spurious) |
-| `fin_04` | 3 | 1/3 ❌ | 3/3 |
-| `fin_05` | 1 | 1/1 | 1/1 |
-| `fin_06` | 1 | 1/1 | 1/1 |
-| `legal_01` | 2 | 2/2 | 2/2 |
-| `legal_02` | 1 | 1/1 (+1 spurious) | 1/1 |
-| `legal_03` | 1 | 1/1 (+1 spurious) | 1/1 (+1 spurious) |
-| `legal_04` | 4 | 4/4 | 4/4 |
-| `legal_05` | 3 | 3/3 (+1 spurious) | 2/3 ❌ |
-| `legal_06` | 2 | 2/2 | 1/2 ❌ |
-| `pub_01` | 3 | 3/3 | 1/3 ❌ |
-| `pub_02` | 2 | 2/2 (+1 spurious) | 1/2 ❌ |
-| `pub_03` | 1 | 1/1 (+1 spurious) | 1/1 (+1 spurious) |
-| `pub_04` | 2 | 2/2 | 2/2 |
-| `pub_05` | 3 | 3/3 | 1/3 ❌ |
-| `pub_06` | 4 | 4/4 (+1 spurious) | 3/4 ❌ |
+| Scenario | Expected | `sahara` | `whisper_large_v3` | `whisper_small` |
+|---|---|--:|--:|--:|
+| `fin_01` | 2 | 2/2 | 2/2 | 1/2 ❌ |
+| `fin_02` | 1 | 1/1 | 1/1 (+2 spurious) | 0/1 ❌ |
+| `fin_03` | 2 | 2/2 (+1 spurious) | 2/2 (+1 spurious) | 2/2 (+1 spurious) |
+| `fin_04` | 3 | 1/3 ❌ | 3/3 | 3/3 |
+| `fin_05` | 1 | 1/1 | 1/1 | 1/1 |
+| `fin_06` | 1 | 1/1 | 1/1 | 1/1 |
+| `legal_01` | 2 | 2/2 | 2/2 | 2/2 |
+| `legal_02` | 1 | 1/1 (+1 spurious) | 1/1 | 0/1 ❌ |
+| `legal_03` | 1 | 1/1 (+1 spurious) | 1/1 (+1 spurious) | 1/1 (+1 spurious) |
+| `legal_04` | 4 | 4/4 | 4/4 | 3/4 ❌ |
+| `legal_05` | 3 | 3/3 (+1 spurious) | 2/3 ❌ | 2/3 ❌ |
+| `legal_06` | 2 | 2/2 | 1/2 ❌ | 1/2 ❌ |
+| `pub_01` | 3 | 3/3 | 1/3 ❌ | 2/3 ❌ |
+| `pub_02` | 2 | 2/2 (+1 spurious) | 1/2 ❌ | 2/2 |
+| `pub_03` | 1 | 1/1 (+1 spurious) | 1/1 (+1 spurious) | 1/1 (+1 spurious) |
+| `pub_04` | 2 | 2/2 | 2/2 | 2/2 |
+| `pub_05` | 3 | 3/3 | 1/3 ❌ | 0/3 ❌ |
+| `pub_06` | 4 | 4/4 (+1 spurious) | 3/4 ❌ | 4/4 (+1 spurious) |
 
 *`+n spurious` = negations the model added that the speaker did not say. These invert meaning and are counted separately, because preservation alone would score an invented negation as a success.*
 
@@ -64,6 +64,28 @@ dropped zero the same as a dropped filler word.
 |---|--:|--:|--:|--:|
 | `sahara` | 10/17 (58.8%) | 1/1 (100.0%) | 36/38 (94.7%) | 7 |
 | `whisper_large_v3` | 16/17 (94.1%) | 1/1 (100.0%) | 30/38 (78.9%) | 5 |
+| `whisper_small` | 14/17 (82.4%) | 1/1 (100.0%) | 28/38 (73.7%) | 4 |
+
+## Does the compiler repair what ASR lost?
+
+Negation measured in the raw transcript, then in the compiled case fields.
+
+| Model | In transcript | In compiled case | Change |
+|---|--:|--:|--:|
+| `sahara` | 94.7 | 92.1 | -2.6 |
+| `whisper_large_v3` | 78.9 | 97.4 | +18.4 |
+| `whisper_small` | 73.7 | 94.7 | +21.1 |
+
+**Semantic loss is recoverable; numeric loss is not.** A model that drops
+negations during transcription largely regains them in the compiled case,
+because the extractor reads surrounding context and reconstructs the
+negated claim. Amount accuracy shows no such recovery: `240,000` heard as
+`24,000` has no contextual redundancy to restore it, and the transcript
+still reads fluently.
+
+This is the argument for building the compiler layer rather than only
+choosing a better speech model -- and the reason the confirmation gate is
+applied to amounts and reference numbers specifically, not to everything.
 
 ## Why this drives a product decision
 

@@ -108,17 +108,28 @@ API, UI) · `benchmark/` (manifest, resumable runner, Level 1 scorer, Level 2 sc
 
 ### Models compared
 
-Four speech models, exceeding the required Sahara + two others:
+**Three speech models benchmarked**, satisfying the required Sahara + at least two others:
 
-| Model | Role | Runs on |
-|---|---|---|
-| **Intron Sahara v2.5** | African code-switching specialist (required) | API |
-| **Whisper large-v3** | strongest general-purpose multilingual baseline | API |
-| **Whisper small** | general-purpose baseline, size-controlled | local CPU |
-| **MMS-300M Yoruba-English** | African/code-switch specialist, different architecture | local CPU |
+| Model | Role | Runs on | Status |
+|---|---|---|---|
+| **Intron Sahara v2.5** | African code-switching specialist (required) | API | ✅ benchmarked |
+| **Whisper large-v3** | strongest general-purpose multilingual baseline | API | ✅ benchmarked |
+| **Whisper small** | general-purpose baseline, size-controlled | local CPU | ✅ benchmarked |
+| **MMS-300M Yoruba-English** | African/code-switch specialist, different architecture | local CPU | ⚠️ implemented, not benchmarked |
 
-MMS is Yoruba-English only and is therefore **scored only on the Yoruba track**. Running
-a Yoruba-only model on Hausa and calling the result a fair comparison would be dishonest.
+The two Whisper models are deliberately chosen as a **size-controlled pair**: large-v3 and
+small share an architecture and training recipe and differ mainly in capacity, so the gap
+between them separates "what capacity buys you" from "what code-switch-specific training
+buys you" — which is the comparison Sahara is actually in.
+
+**MMS is implemented in `app/asr.py` and is selectable, but produced no results** and is
+therefore absent from every table. Its 1.2 GB download was cut off repeatedly by the same
+connection drops that limited our AfriSwitch pull. It is Yoruba-English only, so it would
+have been scored on the Yoruba track alone — running a Yoruba-only model on Hausa and
+calling that a fair comparison would be dishonest benchmarking, and the harness enforces
+that automatically via `supported_languages`.
+
+We report it as unrun rather than quietly dropping it from the model list.
 
 ### Evaluation data
 
@@ -138,17 +149,21 @@ Reported under **three normalization schemes**, because the choice changes the r
 | `loose` | also strips Yoruba sub-dots (ẹ ọ ṣ) and tone marks |
 | `numeric` | `loose` + numbers canonicalised to digits |
 
-On AfriSwitch Yoruba:
+On 25 AfriSwitch Yoruba clips with human reference transcriptions:
 
-| Model | WER strict | WER loose | Negation ↑ | Median latency |
-|---|--:|--:|--:|--:|
-| `sahara` | 57.6 | **34.6** | **88.9** | 19.2s |
-| `whisper_large_v3` | 65.1 | 65.1 | 22.2 | 3.1s |
+| Model | WER strict | WER loose | WER numeric (95% CI) | CER loose | Negation ↑ | Median latency |
+|---|--:|--:|--:|--:|--:|--:|
+| `sahara` | 83.1 | **57.5** | **57.4 (49.1–66.6)** | **38.6** | **52.8** | 17.9s |
+| `whisper_large_v3` | 89.1 | 87.8 | 87.8 (79.9–96.5) | 49.5 | 13.9 | 4.5s |
 
-**Sahara's 23-point strict/loose gap is entirely diacritics.** It writes `Ìwọ ni problem
+**Sahara wins decisively on in-the-wild code-switched Yoruba** — a 30-point WER gap whose
+95% confidence intervals do not overlap. Absolute WER is high for both because AfriSwitch
+is spontaneous, heavily code-mixed speech rather than read prompts.
+
+**Sahara's 25-point strict/loose gap is entirely diacritics.** It writes `Ìwọ ni problem
 mi`; the AfriSwitch human reference is un-diacritized `Iwo ni problem mi`. Under a
 diacritic-sensitive scheme Sahara is penalised for being *more* orthographically correct.
-Whisper scores identically under both because it emits no diacritics at all.
+Whisper's gap is 1.3 points, because it emits no diacritics at all.
 
 A single-scheme WER table would have named the wrong winner. This is the central
 methodological claim of our benchmark.
@@ -161,14 +176,38 @@ See [`reports/downstream/DOWNSTREAM.md`](reports/downstream/DOWNSTREAM.md) and
 [`reports/downstream/FAILURE_ANALYSIS.md`](reports/downstream/FAILURE_ANALYSIS.md) for the
 generated tables and per-scenario breakdown.
 
-**Headline finding: the models fail in opposite directions.**
+18 recordings, three models, one compiler:
 
-Sahara preserves code-switched *structure* — it keeps negations Whisper drops and writes
-correct Yoruba orthography. Whisper preserves *numbers* — Sahara systematically loses a
-zero on large naira amounts (`240,000 → 24000`, `320,000 → 32000`, `48,000 → 14000`).
+| Model | n | Field acc ↑ | Amounts ↑ | Ref-nums ↑ | Negation ↑ | Case type ↑ | Routing ↑ | Completeness ↑ |
+|---|--:|--:|--:|--:|--:|--:|--:|--:|
+| `whisper_large_v3` | 18 | **60.5** | **94.1** | 100.0 | 100.0 | **100.0** | **100.0** | 82.2 |
+| `sahara` | 18 | 59.2 | 58.8 | 100.0 | 100.0 | **100.0** | **100.0** | **83.3** |
+| `whisper_small` | 18 | 48.7 | 82.4 | 100.0 | 100.0 | 83.3 | 83.3 | 69.6 |
 
-Both classify and route **100%** of cases correctly. The architecture is robust to ASR
-noise for the structural decision and fragile for the numeric one.
+**Finding 1 — ASR quality breaks the downstream task, but only past a threshold.**
+Sahara and Whisper large-v3 both classify and route **100%** of cases correctly despite
+producing very different transcripts. Whisper small falls to **83.3%** on both. The
+size-controlled pair isolates the cause: large-v3 and small share an architecture and
+recipe, so the gap is capacity, not code-switch-specific training.
+
+**Finding 2 — the two strong models fail in opposite directions.** Measured on raw
+transcripts:
+
+| Model | Amounts preserved | Negations preserved |
+|---|--:|--:|
+| `sahara` | 10/17 (58.8%) | **36/38 (94.7%)** |
+| `whisper_large_v3` | **16/17 (94.1%)** | 30/38 (78.9%) |
+| `whisper_small` | 14/17 (82.4%) | 28/38 (73.7%) |
+
+Sahara preserves code-switched *structure*; Whisper preserves *numbers*. Sahara
+systematically loses a zero on large naira amounts (`240,000 → 24000`,
+`320,000 → 32000`, `48,000 → 14000`).
+
+**Finding 3 — the compiler partially repairs dropped negations.** Negation integrity is
+100% at the case level for all three models, while transcript-level preservation ranges
+from 73.7% to 94.7%: the extraction step recovers the negative claim from surrounding
+context. That robustness is only visible because the same property was measured at both
+levels.
 
 ### Why this is not just a WER leaderboard
 

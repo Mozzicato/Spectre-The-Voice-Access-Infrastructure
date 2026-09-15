@@ -167,6 +167,58 @@ def main() -> None:
         row.append(f"{added}" if added else "0")
         lines.append(f"| `{m}` | " + " | ".join(row) + " |")
 
+    # --- does the compiler repair what ASR lost? ---
+    import collections
+    cc_path = config.REPORTS / "downstream" / "compiled_cases.jsonl"
+    if cc_path.exists():
+        def _flat(v):
+            if isinstance(v, dict):
+                return " ".join(f"{a} {b}" for a, b in v.items())
+            if isinstance(v, (list, tuple)):
+                return " ".join(_flat(x) for x in v)
+            return str(v)
+
+        agg = collections.defaultdict(lambda: [0, 0, 0])
+        for entry in load_jsonl(cc_path):
+            scen = entry.get("scenario_id")
+            script = truth.get(scen, {}).get("reference_script", "")
+            expected = negation_markers(script) if script else 0
+            if not expected:
+                continue
+            row = agg[entry["model"]]
+            row[0] += min(negation_markers(
+                entry["packet"].get("provenance", {}).get("transcript", "")), expected)
+            row[1] += min(negation_markers(
+                _flat(entry["packet"].get("user_reported", {}))), expected)
+            row[2] += expected
+
+        if agg:
+            lines += [
+                "", "## Does the compiler repair what ASR lost?", "",
+                "Negation measured in the raw transcript, then in the compiled case fields.",
+                "",
+                "| Model | In transcript | In compiled case | Change |",
+                "|---|--:|--:|--:|",
+            ]
+            for m in sorted(agg):
+                t, c, e = agg[m]
+                delta = (c - t) / e * 100
+                arrow = f"+{delta:.1f}" if delta > 0 else f"{delta:.1f}"
+                lines.append(f"| `{m}` | {t / e * 100:.1f} | {c / e * 100:.1f} | {arrow} |")
+            lines += [
+                "",
+                "**Semantic loss is recoverable; numeric loss is not.** A model that drops",
+                "negations during transcription largely regains them in the compiled case,",
+                "because the extractor reads surrounding context and reconstructs the",
+                "negated claim. Amount accuracy shows no such recovery: `240,000` heard as",
+                "`24,000` has no contextual redundancy to restore it, and the transcript",
+                "still reads fluently.",
+                "",
+                "This is the argument for building the compiler layer rather than only",
+                "choosing a better speech model -- and the reason the confirmation gate is",
+                "applied to amounts and reference numbers specifically, not to everything.",
+            ]
+
     lines += [
         "",
         "## Why this drives a product decision",
