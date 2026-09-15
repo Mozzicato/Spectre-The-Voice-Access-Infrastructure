@@ -311,6 +311,10 @@ def write_report(df: pd.DataFrame, out_dir: Path) -> None:
         "negation are recall percentages, **higher is better** — they measure whether the",
         "information an institution actually needs survived transcription.",
         "",
+        "WER can exceed 100%: it is (substitutions + deletions + insertions) / reference",
+        "length, so a model that emits more words than were spoken scores above 1.0. A",
+        "confidence interval whose upper bound passes 100 is therefore valid, not a bug.",
+        "",
     ]
 
     for label, group in (("language", ["language"]),

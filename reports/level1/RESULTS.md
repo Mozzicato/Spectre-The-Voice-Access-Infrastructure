@@ -19,6 +19,7 @@ All three are reported because the choice materially changes the ranking.
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | `sahara` | 25 | 83.1 | 57.5 | 57.4 (49.1–66.6) | 38.6 | 33.3 | - | 52.8 | 17.89s | 2.29× |
 | `whisper_large_v3` | 25 | 89.1 | 87.8 | 87.8 (79.9–96.5) | 49.5 | 100.0 | - | 13.9 | 4.47s | - |
+| `whisper_small` | 11 | 97.4 | 97.4 | 97.4 (92.9–102.8) | 87.9 | 0.0 | - | 0.0 | 107.41s | - |
 
 WER/CER are percentages, lower is better. Amounts, reference numbers and
 negation are recall percentages, **higher is better** — they measure whether the
@@ -30,6 +31,7 @@ information an institution actually needs survived transcription.
 |---|---|--:|--:|--:|--:|--:|--:|
 | `sahara` | yoruba | 25 | 57.5 | 57.4 | 38.6 | 33.3 | 52.8 |
 | `whisper_large_v3` | yoruba | 25 | 87.8 | 87.8 | 49.5 | 100.0 | 13.9 |
+| `whisper_small` | yoruba | 11 | 97.4 | 97.4 | 87.9 | 0.0 | 0.0 |
 
 ## By code-mixing band
 
@@ -41,6 +43,9 @@ information an institution actually needs survived transcription.
 | `whisper_large_v3` | high | 9 | 79.7 | 79.7 | 43.4 | 100.0 | 27.3 |
 | `whisper_large_v3` | low | 9 | 91.9 | 91.9 | 57.7 | - | 14.3 |
 | `whisper_large_v3` | medium | 7 | 93.0 | 93.0 | 46.4 | 100.0 | 0.0 |
+| `whisper_small` | high | 1 | 100.0 | 100.0 | 76.0 | - | - |
+| `whisper_small` | low | 7 | 101.8 | 101.8 | 102.8 | - | 0.0 |
+| `whisper_small` | medium | 3 | 90.0 | 90.0 | 69.4 | 0.0 | 0.0 |
 
 ## By noise condition
 
@@ -48,3 +53,4 @@ information an institution actually needs survived transcription.
 |---|---|--:|--:|--:|--:|--:|--:|
 | `sahara` | unknown | 25 | 57.5 | 57.4 | 38.6 | 33.3 | 52.8 |
 | `whisper_large_v3` | unknown | 25 | 87.8 | 87.8 | 49.5 | 100.0 | 13.9 |
+| `whisper_small` | unknown | 11 | 97.4 | 97.4 | 87.9 | 0.0 | 0.0 |

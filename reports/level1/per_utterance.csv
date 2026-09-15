@@ -49,3 +49,14 @@ whisper_large_v3,afriswitch_yoruba_00021,yoruba,high,unknown,general,6.875,,28,3
 whisper_large_v3,afriswitch_yoruba_00022,yoruba,high,unknown,general,4.719,,30,20,63,81,30,20,61,81,30,20,61,81,0,0,0,0,0,0
 whisper_large_v3,afriswitch_yoruba_00023,yoruba,low,unknown,general,2.187,,35,35,143,152,35,35,143,152,35,35,143,152,0,0,0,0,0,0
 whisper_large_v3,afriswitch_yoruba_00024,yoruba,high,unknown,general,4.672,,28,42,54,173,26,42,48,173,26,42,48,173,0,0,0,0,4,2
+whisper_small,afriswitch_yoruba_00000,yoruba,medium,unknown,general,123.843,,27,32,85,125,27,32,84,125,27,32,84,125,0,0,0,0,0,0
+whisper_small,afriswitch_yoruba_00001,yoruba,low,unknown,general,95.688,,18,18,62,80,18,18,62,80,18,18,62,80,0,0,0,0,0,0
+whisper_small,afriswitch_yoruba_00002,yoruba,low,unknown,general,83.015,,25,25,111,99,25,25,111,99,25,25,111,99,0,0,0,0,3,0
+whisper_small,afriswitch_yoruba_00003,yoruba,medium,unknown,general,89.672,,37,38,104,141,37,38,104,141,37,38,104,141,0,0,0,0,4,0
+whisper_small,afriswitch_yoruba_00004,yoruba,high,unknown,general,91.938,,34,34,116,150,34,34,114,150,34,34,114,150,0,0,0,0,0,0
+whisper_small,afriswitch_yoruba_00005,yoruba,low,unknown,general,110.031,,43,43,157,169,43,43,156,169,43,43,156,169,0,0,0,0,1,0
+whisper_small,afriswitch_yoruba_00006,yoruba,low,unknown,general,79.89,,9,9,28,33,9,9,28,33,9,9,28,33,0,0,0,0,2,0
+whisper_small,afriswitch_yoruba_00007,yoruba,low,unknown,general,107.407,,41,42,137,158,41,42,138,158,41,42,138,158,0,0,0,0,5,0
+whisper_small,afriswitch_yoruba_00008,yoruba,low,unknown,general,108.468,,16,12,61,46,16,12,61,46,16,12,61,46,0,0,0,0,0,0
+whisper_small,afriswitch_yoruba_00009,yoruba,low,unknown,general,188.032,,20,20,106,62,20,20,107,60,20,20,107,60,0,0,0,0,2,0
+whisper_small,afriswitch_yoruba_00010,yoruba,medium,unknown,general,209.109,,35,40,105,156,35,40,105,156,35,40,103,154,0,1,0,0,1,0
