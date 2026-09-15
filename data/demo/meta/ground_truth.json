@@ -1,206 +1,369 @@
 {
-  "_README": "Ground truth for the downstream benchmark, derived from the MUST SAY facts in docs/RECORDING_GUIDE.md. Fields listed here are the ones the speaker was required to state, so they are stable even though speakers improvise the wording around them. Fields the scenario deliberately omits are absent here and are NOT counted against a model - they are there to exercise the missing-information detector.",
-
+  "_README": "Ground truth for the downstream benchmark, derived from the MUST SAY facts in docs/RECORDING_GUIDE.md. Fields listed here are the ones the speaker was required to state, so they are stable even though speakers improvise the wording around them. Fields the scenario deliberately omits are absent here and are NOT counted against a model - they are there to exercise the missing-information detector. `reference_script` is the INSTRUCTED wording from the recording guide, used as the negation reference so that metric is never derived from an ASR output it is meant to judge.",
   "legal_01": {
-    "domain": "legal", "case_type": "tenancy_dispute", "route": "legal_aid_review",
-    "amounts": [240000], "references": [],
+    "domain": "legal",
+    "case_type": "tenancy_dispute",
+    "route": "legal_aid_review",
+    "amounts": [
+      240000
+    ],
+    "references": [],
     "fields": {
-      "parties": ["landlord", "tenant"],
-      "dates": ["2021", "February"],
-      "amounts": ["240000"],
-      "events": ["landlord asked the speaker to leave the house"]
-    }
+      "parties": [
+        "landlord",
+        "tenant"
+      ],
+      "dates": [
+        "2021",
+        "February"
+      ],
+      "amounts": [
+        "240000"
+      ],
+      "events": [
+        "landlord asked the speaker to leave the house"
+      ]
+    },
+    "reference_script": "My landlord dey tell me make I comot for the house, and I never even do anything. I don dey live for that place since 2021. I pay am two hundred and forty thousand naira for the year, February. E no give me any notice, e just come knock for my door say make I pack comot before month end. I still get eight months wey remain for my rent."
   },
   "legal_02": {
-    "domain": "legal", "case_type": "tenancy_dispute", "route": "legal_aid_review",
-    "amounts": [150000], "references": [],
+    "domain": "legal",
+    "case_type": "tenancy_dispute",
+    "route": "legal_aid_review",
+    "amounts": [
+      150000
+    ],
+    "references": [],
     "fields": {
       "location": "Akoko Road, Yaba",
-      "amounts": ["150000"],
-      "parties": ["landlord", "tenant"],
-      "events": ["caution deposit has not been returned"]
-    }
+      "amounts": [
+        "150000"
+      ],
+      "parties": [
+        "landlord",
+        "tenant"
+      ],
+      "events": [
+        "caution deposit has not been returned"
+      ]
+    },
+    "reference_script": "I moved out of the apartment for Akoko Road, Yaba, last month. My caution deposit na one hundred and fifty thousand naira. Ogá mi, the landlord, ó ní he will return it, but títí di ìsinsìnyí he has not paid me anything. Mo ti call am like six times."
   },
   "legal_03": {
-    "domain": "legal", "case_type": "employment_dispute", "route": "labour_review",
-    "amounts": [85000], "references": [],
+    "domain": "legal",
+    "case_type": "employment_dispute",
+    "route": "labour_review",
+    "amounts": [
+      85000
+    ],
+    "references": [],
     "fields": {
       "location": "Ikeja",
-      "amounts": ["85000"],
-      "parties": ["employer", "supervisor Mr. Adeyemi"],
-      "events": ["salary unpaid from March"]
-    }
+      "amounts": [
+        "85000"
+      ],
+      "parties": [
+        "employer",
+        "supervisor Mr. Adeyemi"
+      ],
+      "events": [
+        "salary unpaid from March"
+      ]
+    },
+    "reference_script": "I dey work for one company for Ikeja since January. Dem suppose dey pay me eighty-five thousand every month. Dem pay me for January and February, but from March till now, dem never pay me one naira. I don talk to my supervisor, Mr. Adeyemi, plenty times. E just dey tell me make I dey wait."
   },
   "legal_04": {
-    "domain": "legal", "case_type": "employment_dispute", "route": "labour_review",
-    "amounts": [], "references": [],
+    "domain": "legal",
+    "case_type": "employment_dispute",
+    "route": "labour_review",
+    "amounts": [],
+    "references": [],
     "fields": {
-      "parties": ["employer"],
-      "events": ["dismissed without warning or query letter"],
-      "dates": ["2023"]
-    }
+      "parties": [
+        "employer"
+      ],
+      "events": [
+        "dismissed without warning or query letter"
+      ],
+      "dates": [
+        "2023"
+      ]
+    },
+    "reference_script": "Biko, they sacked me from my job last week without any warning. I worked there for three years, since 2023. Ha ekwughị ihe ọbụla, they didn't give me any query, no warning letter, nothing. They just told me on Friday not to come back on Monday. They still owe me two months salary."
   },
   "legal_05": {
-    "domain": "legal", "case_type": "consumer_dispute",
+    "domain": "legal",
+    "case_type": "consumer_dispute",
     "route": "consumer_protection_review",
-    "amounts": [320000], "references": [],
+    "amounts": [
+      320000
+    ],
+    "references": [],
     "fields": {
       "location": "Alaba market",
-      "amounts": ["320000"],
-      "dates": ["12 August"],
-      "events": ["generator stopped working within one week of purchase"]
-    }
+      "amounts": [
+        "320000"
+      ],
+      "dates": [
+        "12 August"
+      ],
+      "events": [
+        "generator stopped working within one week of purchase"
+      ]
+    },
+    "reference_script": "I buy one generator for Alaba market on the twelfth of August. The thing cost me three hundred and twenty thousand naira. Before one week finish, e don spoil. I carry am go back, the seller say na my fault. E no gree collect am back, and e no give me any receipt when I buy am."
   },
   "legal_06": {
-    "domain": "legal", "case_type": "consumer_dispute",
+    "domain": "legal",
+    "case_type": "consumer_dispute",
     "route": "consumer_protection_review",
-    "amounts": [180000], "references": [],
+    "amounts": [
+      180000
+    ],
+    "references": [],
     "fields": {
       "location": "Ibadan",
-      "amounts": ["180000"],
-      "events": ["contractor did not return to finish the roof work"]
-    }
+      "amounts": [
+        "180000"
+      ],
+      "events": [
+        "contractor did not return to finish the roof work"
+      ]
+    },
+    "reference_script": "I paid a contractor to fix the roof of my house in Ibadan. We agreed on one hundred and eighty thousand naira, and I paid him half of it upfront in July. Ó ti pẹ́, it's been two months and he has not come back to finish the work. He's not picking my calls."
   },
-
   "fin_01": {
-    "domain": "financial", "case_type": "failed_transfer",
+    "domain": "financial",
+    "case_type": "failed_transfer",
     "route": "bank_dispute_workflow",
-    "amounts": [45000], "references": ["0987654321"],
+    "amounts": [
+      45000
+    ],
+    "references": [
+      "0987654321"
+    ],
     "fields": {
-      "institution": ["GTBank", "Access Bank"],
+      "institution": [
+        "GTBank",
+        "Access Bank"
+      ],
       "transaction_type": "transfer",
       "amount": 45000,
       "transaction_reference": "0987654321",
       "reported_status": "recipient did not receive the money",
       "problem": "money was debited but the recipient never received it"
-    }
+    },
+    "reference_script": "Yesterday I transfer forty-five thousand naira from my GTBank account go my brother account for Access Bank. The money comot for my account, alert enter my phone, but the person never receive am. Na since yesterday morning. The transaction reference na zero nine eight seven six five four three two one. I don call the bank, dem never do anything."
   },
   "fin_02": {
-    "domain": "financial", "case_type": "unauthorized_transaction",
+    "domain": "financial",
+    "case_type": "unauthorized_transaction",
     "route": "fraud_review",
-    "amounts": [72500], "references": [],
+    "amounts": [
+      72500
+    ],
+    "references": [],
     "fields": {
-      "institution": ["Zenith Bank"],
+      "institution": [
+        "Zenith Bank"
+      ],
       "amount": 72500,
       "date": "3 September",
       "reported_status": "not authorized by the account holder",
       "problem": "money left the account without authorization"
-    }
+    },
+    "reference_script": "Owó mi ti lọ, money left my account and I did not authorize it. It happened on the third of September. They took seventy-two thousand, five hundred naira. Mi ò mọ ibi tí ó lọ, I don't know where it went. I got the alert at about 2am while I was sleeping. My bank is Zenith Bank."
   },
   "fin_03": {
-    "domain": "financial", "case_type": "failed_atm_withdrawal",
+    "domain": "financial",
+    "case_type": "failed_atm_withdrawal",
     "route": "bank_dispute_workflow",
-    "amounts": [20000, 60000], "references": [],
+    "amounts": [
+      20000,
+      60000
+    ],
+    "references": [],
     "fields": {
-      "institution": ["First Bank"],
+      "institution": [
+        "First Bank"
+      ],
       "transaction_type": "withdrawal",
       "amount": 60000,
       "reported_status": "not reversed",
       "problem": "account debited but the ATM did not dispense cash"
-    }
+    },
+    "reference_script": "I go ATM for Ojuelegba on Saturday, I wan withdraw twenty thousand. The machine debit me but money no comot. Na three times e do that kind thing, total sixty thousand wey dem debit me. I fill the dispute form for the branch on Monday but dem never reverse am. Na First Bank."
   },
   "fin_04": {
-    "domain": "financial", "case_type": "unauthorized_transaction",
+    "domain": "financial",
+    "case_type": "unauthorized_transaction",
     "route": "fraud_review",
-    "amounts": [110000], "references": [],
+    "amounts": [
+      110000
+    ],
+    "references": [],
     "fields": {
-      "institution": ["UBA"],
+      "institution": [
+        "UBA"
+      ],
       "amount": 110000,
       "date": "28 August",
       "reported_status": "reported but not resolved",
       "problem": "card used without the account holder's permission"
-    }
+    },
+    "reference_script": "Somebody used my card without my permission. Ego m efuola, I lost one hundred and ten thousand naira. It was on the twenty-eighth of August, three different transactions. I was not the one who did it, I was at work. I reported it to UBA the same day but they have not resolved anything."
   },
   "fin_05": {
-    "domain": "financial", "case_type": "payment_dispute",
+    "domain": "financial",
+    "case_type": "payment_dispute",
     "route": "merchant_dispute_workflow",
-    "amounts": [35000], "references": [],
+    "amounts": [
+      35000
+    ],
+    "references": [],
     "fields": {
       "amount": 35000,
       "date": "5 September",
       "reported_status": "goods not received",
       "problem": "paid for an online order that was never delivered"
-    }
+    },
+    "reference_script": "I order something online, I pay thirty-five thousand naira on the fifth of September. The seller say e don ship am but I never receive anything. Na two weeks now. When I message am for WhatsApp, e block me. I still get the payment receipt and the chat."
   },
   "fin_06": {
-    "domain": "financial", "case_type": "loan_dispute",
+    "domain": "financial",
+    "case_type": "loan_dispute",
     "route": "lending_conduct_review",
-    "amounts": [50000, 62000, 89000], "references": [],
+    "amounts": [
+      50000,
+      62000,
+      89000
+    ],
+    "references": [],
     "fields": {
       "amount": 89000,
       "transaction_type": "loan",
       "reported_status": "overcharged",
       "problem": "lender deducted more than the agreed repayment amount"
-    }
+    },
+    "reference_script": "I took a loan from one of these mobile apps. The amount was fifty thousand naira, and they said I would pay back sixty-two thousand. But when it was time, they deducted eighty-nine thousand from my account. Kudi na ya yi yawa, it's too much. They did not explain the extra charges."
   },
-
   "pub_01": {
-    "domain": "public_service", "case_type": "streetlight_failure",
+    "domain": "public_service",
+    "case_type": "streetlight_failure",
     "route": "public_infrastructure_complaint",
-    "amounts": [], "references": [],
+    "amounts": [],
+    "references": [],
     "fields": {
       "location": "Adeniyi Jones, Ikeja",
       "problem": "streetlight has not been working",
       "duration": "about three weeks",
-      "previous_reports": ["reported to the local government two times"],
-      "impact": ["robberies on the street", "two people robbed last week"]
-    }
+      "previous_reports": [
+        "reported to the local government two times"
+      ],
+      "impact": [
+        "robberies on the street",
+        "two people robbed last week"
+      ]
+    },
+    "reference_script": "This streetlight don spoil for almost three weeks now for our street, Adeniyi Jones, Ikeja. Kò sí ìmọ́lẹ̀ rárá, there's no light at all, and the place don dark well well. Mo ti report é sí local government two times but wọn ò ṣe nkankan, they have not done anything. Àwọn ọmọ jàndùkú ti bẹ̀rẹ̀ sí í, armed robbers don start to dey operate for there. Last week dem rob two people."
   },
   "pub_02": {
-    "domain": "public_service", "case_type": "water_supply",
+    "domain": "public_service",
+    "case_type": "water_supply",
     "route": "utility_complaint",
-    "amounts": [500], "references": [],
+    "amounts": [
+      500
+    ],
+    "references": [],
     "fields": {
       "problem": "no water supply to the area",
       "duration": "since the beginning of August",
       "agency": "Water Corporation",
-      "previous_reports": ["visited their office three times"],
-      "impact": ["about forty houses affected", "buying water at 500 naira per jerrican"]
-    }
+      "previous_reports": [
+        "visited their office three times"
+      ],
+      "impact": [
+        "about forty houses affected",
+        "buying water at 500 naira per jerrican"
+      ]
+    },
+    "reference_script": "Water never run for our area since the beginning of August. Na Water Corporation suppose dey supply us. We don write letter, we don go their office for three different times, dem no do anything. Now everybody dey buy water for five hundred naira per jerrican. E dey affect the whole street, like forty houses."
   },
   "pub_03": {
-    "domain": "public_service", "case_type": "road_or_drainage",
+    "domain": "public_service",
+    "case_type": "road_or_drainage",
     "route": "public_infrastructure_complaint",
-    "amounts": [], "references": [],
+    "amounts": [],
+    "references": [],
     "fields": {
       "location": "Ajegunle",
       "problem": "blocked drainage causing flooding into homes",
       "duration": "since last rainy season",
-      "previous_reports": ["reported to the local government since March"],
-      "impact": ["about two hundred families affected"]
-    }
+      "previous_reports": [
+        "reported to the local government since March"
+      ],
+      "impact": [
+        "about two hundred families affected"
+      ]
+    },
+    "reference_script": "The road wey dey lead to our area for Ajegunle don bad since last year rainy season. The drainage block, so anytime rain fall, water go enter people house. Last month e damage plenty property. We don report to the local government since March, dem never come even look am. Na about two hundred families dey affected."
   },
   "pub_04": {
-    "domain": "public_service", "case_type": "electricity_supply",
+    "domain": "public_service",
+    "case_type": "electricity_supply",
     "route": "utility_complaint",
-    "amounts": [48000], "references": [],
+    "amounts": [
+      48000
+    ],
+    "references": [],
     "fields": {
       "problem": "estimated bill far higher than the electricity actually supplied",
       "duration": "last month",
-      "previous_reports": ["applied for a prepaid meter since January"],
-      "impact": ["only about six days of supply in the month"]
-    }
+      "previous_reports": [
+        "applied for a prepaid meter since January"
+      ],
+      "impact": [
+        "only about six days of supply in the month"
+      ]
+    },
+    "reference_script": "They brought a bill of forty-eight thousand naira for last month, but we only had light for about six days in that whole month. Ọ bụghị eziokwu, it's not correct. This is estimated billing, we don't have a prepaid meter. We applied for a meter since January and they have not given us one."
   },
   "pub_05": {
-    "domain": "public_service", "case_type": "waste_management",
+    "domain": "public_service",
+    "case_type": "waste_management",
     "route": "sanitation_complaint",
-    "amounts": [2000], "references": [],
+    "amounts": [
+      2000
+    ],
+    "references": [],
     "fields": {
       "problem": "waste collectors have not come to the street",
       "duration": "over a month",
-      "previous_reports": ["called them four times with no answer"],
-      "impact": ["refuse piling up and smelling"]
-    }
+      "previous_reports": [
+        "called them four times with no answer"
+      ],
+      "impact": [
+        "refuse piling up and smelling"
+      ]
+    },
+    "reference_script": "Àwọn tí ń kó pàǹtí, the waste collectors have not come to our street for over a month. Ìdọ̀tí ti kún, the refuse don pile up everywhere, and e don dey smell. We dey pay two thousand naira every month for that service. Mo ti pe wọ́n, I called them four times, nobody answered."
   },
   "pub_06": {
-    "domain": "public_service", "case_type": "health_facility",
+    "domain": "public_service",
+    "case_type": "health_facility",
     "route": "health_service_complaint",
-    "amounts": [], "references": [],
+    "amounts": [],
+    "references": [],
     "fields": {
       "problem": "no doctor on duty at the primary health centre",
       "duration": "three visits this month",
-      "previous_reports": ["visited three times this month"],
-      "impact": ["people travelling from far places cannot be seen"]
-    }
+      "previous_reports": [
+        "visited three times this month"
+      ],
+      "impact": [
+        "people travelling from far places cannot be seen"
+      ]
+    },
+    "reference_script": "I went to the primary health centre in our area three times this month and there was no doctor on duty. The last time was on the ninth of September. They told me to come back the next day, and when I came back, still nobody. Ba likita, no doctor. People are coming from far places to use this centre."
   }
 }

@@ -137,6 +137,11 @@
       <ul class="clean" id="missing"></ul>
     </div>
 
+    <div id="vwrap" hidden>
+      <h3 style="font-size:13px;margin:18px 0 8px;color:var(--warn)">CONFIRM BEFORE ACTING</h3>
+      <div id="verify"></div>
+    </div>
+
     <div id="qwrap" hidden>
       <h3 style="font-size:13px;margin:18px 0 8px;color:var(--mut)">WE NEED TO ASK</h3>
       <div id="questions"></div>
@@ -275,6 +280,12 @@ function render(p) {
   $("#misswrap").hidden = !p.missing_information.length;
   $("#missing").innerHTML = p.missing_information
     .map(m => `<li><span class="pill no">missing</span> ${m.replace(/_/g, " ")}</li>`).join("");
+
+  const vr = p.verification_required || [];
+  $("#vwrap").hidden = !vr.length;
+  $("#verify").innerHTML = vr.map(v =>
+    `<div class="q" style="border-color:var(--warn)"><b>${esc(v.prompt)}</b><em>${esc(v.why)}</em></div>`
+  ).join("");
 
   $("#qwrap").hidden = !p.outstanding_questions.length;
   $("#questions").innerHTML = p.outstanding_questions

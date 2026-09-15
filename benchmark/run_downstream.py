@@ -98,17 +98,22 @@ def score_case(packet: dict, truth: dict, transcript: str, reference_text: str) 
                 hit += 1
         return hit, len(expected)
 
+    # Entity preservation is scored against the TRANSCRIPT, not the packet.
+    # A schema with a single `amount` field physically cannot hold the three amounts in
+    # a loan-overcharge scenario, so scoring the packet would measure schema capacity and
+    # report it as an ASR failure. What we want to know here is whether the speech model
+    # preserved the number at all.
+    haystack = f"{transcript} {_flatten(got)}"
+
     exp_amounts = truth.get("amounts") or []
-    got_amounts = spoken_numbers_to_values(_flatten(got))
-    amt_hit, amt_tot = recall(exp_amounts, got_amounts)
+    amt_hit, amt_tot = recall(exp_amounts, spoken_numbers_to_values(haystack))
 
     exp_refs = [str(r) for r in (truth.get("references") or [])]
-    got_refs = spoken_digit_strings(_flatten(got))
-    ref_hit, ref_tot = recall(exp_refs, got_refs)
+    ref_hit, ref_tot = recall(exp_refs, spoken_digit_strings(haystack))
 
     # --- negation integrity, measured against the human reference transcript ---
     expected_neg = negation_markers(reference_text) if reference_text else 0
-    kept_neg = min(negation_markers(_flatten(got)), expected_neg) if expected_neg else 0
+    kept_neg = min(negation_markers(haystack), expected_neg) if expected_neg else 0
 
     return {
         "case_type": packet["case_type"],
@@ -219,7 +224,11 @@ def run(manifest: Path, models: list[str] | None, out_dir: Path,
             "scenario_id": scenario, "language": entry.get("language", ""),
             "domain": entry["packet"]["domain"],
         }
-        rec.update(score_case(entry["packet"], truth, "", row.get("reference", "")))
+        # Prefer the INSTRUCTED script over any transcript: the negation reference must
+        # not be derived from an ASR output that the same metric is meant to judge.
+        neg_reference = truth.get("reference_script") or row.get("reference", "")
+        asr_text = entry["packet"].get("provenance", {}).get("transcript", "")
+        rec.update(score_case(entry["packet"], truth, asr_text, neg_reference))
         records.append(rec)
 
     if degraded:

@@ -64,16 +64,22 @@ LANG_TO_INTRON = {
     "english": "en",
 }
 
-# Whisper needs an ISO-639-1 hint. Whisper has no Pidgin; it is treated as English,
-# which is itself a finding worth reporting rather than hiding.
+# Whisper needs an ISO-639-1 hint, and its language inventory has real gaps for our
+# target languages. Verified against the live API: it accepts `yo` and `ha` but REJECTS
+# `ig` outright ("unsupported language: ig"), and it has no Nigerian Pidgin token at all.
+# Both gaps are handled by falling back to English and are reported in the results rather
+# than hidden -- a baseline that cannot address the language is itself the finding.
 LANG_TO_WHISPER = {
     "yoruba": "yo",
-    "igbo": "ig",
+    "igbo": "en",           # Whisper has no Igbo token
     "hausa": "ha",
-    "pidgin": "en",
+    "pidgin": "en",         # Whisper has no Nigerian Pidgin token
     "nigerian_pidgin": "en",
     "english": "en",
 }
+
+# Languages each baseline genuinely supports, for honest reporting.
+WHISPER_NATIVE_SUPPORT = {"yoruba", "hausa", "english"}
 
 PRIMARY_LANGS = ["yoruba", "pidgin", "igbo", "hausa"]
 

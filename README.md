@@ -216,6 +216,62 @@ Benchmarks are easy to corrupt by accident, so the harness refuses to help:
 
 ---
 
+## Results
+
+All figures below are computed from cached model outputs in `benchmark/results/` and are
+reproducible from them. Nothing here is estimated.
+
+### Level 2 — institutional understanding (18 self-recorded scenarios)
+
+Same audio, same compiler, different speech model.
+
+| Model | n | Field acc ↑ | Amounts ↑ | Ref-nums ↑ | Negation ↑ | Case type ↑ | Routing ↑ |
+|---|--:|--:|--:|--:|--:|--:|--:|
+| `whisper_large_v3` | 18 | 67.1 | **94.1** | 100.0 | 78.9 | 100.0 | 100.0 |
+| `sahara` | 18 | 63.2 | 58.8 | 100.0 | **94.7** | 100.0 | 100.0 |
+
+**The two models fail in opposite directions, and that is the finding.**
+
+Sahara preserves code-switched *structure* — it keeps negations that Whisper drops, and
+it writes correct Yoruba orthography. Whisper preserves *numbers* — Sahara systematically
+loses a zero on large naira amounts (`240,000 → 24000`, `320,000 → 32000`,
+`48,000 → 14000`).
+
+Both classify and route every one of the 18 cases correctly, which is the point of the
+architecture: the compiler is robust to ASR noise for the *structural* decision, and
+fragile for the *numeric* one.
+
+Per-scenario detail: [`reports/downstream/FAILURE_ANALYSIS.md`](reports/downstream/FAILURE_ANALYSIS.md).
+
+### Level 1 — speech recognition (AfriSwitch)
+
+On real AfriSwitch Yoruba, the choice of normalization scheme changes the answer:
+
+| Model | WER strict | WER loose | Negation ↑ | Median latency |
+|---|--:|--:|--:|--:|
+| `sahara` | 57.6 | **34.6** | **88.9** | 19.2s |
+| `whisper_large_v3` | 65.1 | 65.1 | 22.2 | 3.1s |
+
+Sahara's 23-point strict/loose gap is **entirely diacritics**. It writes `Ìwọ ni problem
+mi`; the AfriSwitch human reference is un-diacritized `Iwo ni problem mi`. Under a
+diacritic-sensitive scheme Sahara is penalised for being *more* orthographically correct.
+Whisper scores identically under both because it emits no diacritics at all.
+
+A single-scheme WER table would have named the wrong winner.
+
+### What this changed in the product
+
+Because amount preservation is unreliable **and the models fail on different scenarios**,
+no choice of speech model fixes it. So the system does not treat an extracted amount or
+reference number as settled: both are returned in `verification_required`, the packet is
+held at `awaiting_confirmation`, and the value is read back to the speaker before the
+case can be acted on. A dropped zero produces a fluent transcript that nothing downstream
+can detect — confirmation is the only safe response.
+
+See `HIGH_RISK_FIELDS` in [`app/routing.py`](app/routing.py).
+
+---
+
 ## Layout
 
 ```

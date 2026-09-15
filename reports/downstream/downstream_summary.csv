@@ -1,0 +1,3 @@
+model,n,field_accuracy,amount_accuracy,refnum_accuracy,negation_integrity,case_type_accuracy,routing_accuracy,completeness
+whisper_large_v3,18,0.6710526315789473,0.9411764705882353,1.0,0.9736842105263158,1.0,1.0,0.8222777777777778
+sahara,18,0.631578947368421,0.5882352941176471,1.0,1.0,1.0,1.0,0.8333333333333334

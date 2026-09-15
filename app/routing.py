@@ -73,6 +73,41 @@ NEXT_STEPS: dict[str, list[str]] = {
 # Below this, the packet is flagged rather than presented as ready.
 COMPLETENESS_THRESHOLD = 0.75
 
+# Fields that must be read back to the speaker before the case is acted on.
+#
+# This list is not a guess. On our 18-scenario evaluation set, amount preservation was
+# 58.8% for Sahara and 94.1% for Whisper large-v3 -- and the two models failed on
+# DIFFERENT scenarios, so no single speech model is safe here and picking a better one
+# does not solve it. A dropped zero turns 240,000 into 24,000: the transcript still reads
+# fluently and nothing downstream can detect the error.
+#
+# The honest engineering response is not to trust any model on these values, but to make
+# the system ask. Confirmation is cheap; a case filed with the wrong amount is not.
+HIGH_RISK_FIELDS = {
+    "amount": "amount",
+    "amounts": "amounts",
+    "transaction_reference": "transaction reference",
+}
+
+
+def verification_required(case: "CompiledCase") -> list[dict]:
+    """High-risk values that were extracted and should be read back to the speaker."""
+    checks: list[dict] = []
+    for name, label in HIGH_RISK_FIELDS.items():
+        value = case.fields.get(name)
+        if value in (None, "", [], {}):
+            continue
+        shown = ", ".join(str(v) for v in value) if isinstance(value, list) else str(value)
+        checks.append({
+            "field": name,
+            "value": shown,
+            "prompt": f"Please confirm the {label}: {shown}. Is that correct?",
+            "why": ("Speech models frequently drop a digit from large amounts and "
+                    "reference numbers. This value must be confirmed before the case "
+                    "is acted on."),
+        })
+    return checks
+
 
 def route(case: "CompiledCase") -> dict:
     schema = schemas.get(case.domain)
@@ -115,19 +150,25 @@ def build_packet(case: "CompiledCase", uploaded_evidence: list[str] | None = Non
     schema = schemas.get(case.domain)
     routing = route(case)
     completeness = case.completeness
-    ready = completeness >= COMPLETENESS_THRESHOLD and not case.missing_information
+    checks = verification_required(case)
+    ready = (completeness >= COMPLETENESS_THRESHOLD
+             and not case.missing_information
+             and not checks)
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "compiler": schema.label,
         "domain": case.domain,
         "case_type": case.case_type,
-        "status": "ready_for_review" if ready else "incomplete",
+        "status": "ready_for_review" if ready else (
+            "awaiting_confirmation" if checks and not case.missing_information
+            else "incomplete"),
         "completeness": round(completeness, 3),
         "confidence": case.confidence,
         "user_reported": case.fields,
         "missing_information": case.missing_information,
         "outstanding_questions": case.questions,
+        "verification_required": verification_required(case),
         "evidence": evidence_status(case, uploaded_evidence),
         "routing": routing,
         "provenance": {
@@ -197,6 +238,13 @@ def render_text(packet: dict) -> str:
         add("  " + "-" * 58)
         for item in packet["missing_information"]:
             add(f"  [!!] {item}")
+        add("")
+
+    if packet.get("verification_required"):
+        add("  CONFIRM BEFORE ACTING")
+        add("  " + "-" * 58)
+        for check in packet["verification_required"]:
+            add(f"  [?] {check['prompt']}")
         add("")
 
     if packet["outstanding_questions"]:

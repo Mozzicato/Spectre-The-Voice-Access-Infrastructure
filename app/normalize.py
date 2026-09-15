@@ -47,6 +47,10 @@ _CURRENCY = {
 _PUNCT = re.compile(r"[^\w\s̀-ͯ]", flags=re.UNICODE)
 # 45,000 -> 45000 before punctuation stripping, else it becomes two numbers.
 _DIGIT_GROUP = re.compile(r"(?<=\d),(?=\d\d\d(?!\d))")
+# Whisper renders thousands with a space ("45 000"). Without this the parser reads
+# that as [45, 0] and reports a FALSE amount failure against a correct transcript.
+# Restricted to 1-3 digits + exactly 3 digits so "since 2021 240" is left alone.
+_DIGIT_SPACE = re.compile(r"(?<!\d)(\d{1,3}) (\d{3})(?!\d)")
 _WS = re.compile(r"\s+")
 
 # Disfluencies. Removed in both schemes: every model transcribes them differently and
@@ -68,6 +72,8 @@ def _base(text: str) -> str:
         return ""
     text = unicodedata.normalize("NFC", text)
     text = _DIGIT_GROUP.sub("", text)
+    for _ in range(2):  # 1 234 567 needs two passes
+        text = _DIGIT_SPACE.sub(lambda m: m.group(1) + m.group(2), text)
     for src, dst in _CURRENCY.items():
         text = text.replace(src, dst)
     text = text.lower()
@@ -182,6 +188,16 @@ def spoken_digit_strings(text: str, min_len: int = 4) -> list[str]:
 
     for raw in re.findall(r"\d{%d,}" % min_len, flat):
         out.append(raw)
+
+    # Models break long digit strings at arbitrary points: Sahara returns the verified
+    # reference 0987654321 as "09876543 21". All ten digits are correct, so counting that
+    # as a loss would score typography rather than recognition. Adjacent digit groups are
+    # therefore also offered joined. Scoring is recall against an expected value, so an
+    # extra candidate can never create a false match.
+    for run in re.finditer(r"\d+(?:\s+\d+)+", flat):
+        joined = re.sub(r"\s+", "", run.group(0))
+        if len(joined) >= min_len:
+            out.append(joined)
 
     return out
 
