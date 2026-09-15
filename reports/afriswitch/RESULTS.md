@@ -19,10 +19,15 @@ All three are reported because the choice materially changes the ranking.
 |---|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
 | `sahara` | 25 | 83.1 | 57.5 | 57.4 (49.1–66.6) | 38.6 | 33.3 | - | 52.8 | 17.89s | 2.29× |
 | `whisper_large_v3` | 25 | 89.1 | 87.8 | 87.8 (79.9–96.5) | 49.5 | 100.0 | - | 13.9 | 4.47s | - |
+| `whisper_small` | 25 | 103.2 | 103.2 | 103.2 (96.8–114.7) | 89.0 | 33.3 | - | 0.0 | 188.03s | - |
 
 WER/CER are percentages, lower is better. Amounts, reference numbers and
 negation are recall percentages, **higher is better** — they measure whether the
 information an institution actually needs survived transcription.
+
+WER can exceed 100%: it is (substitutions + deletions + insertions) / reference
+length, so a model that emits more words than were spoken scores above 1.0. A
+confidence interval whose upper bound passes 100 is therefore valid, not a bug.
 
 ## By language
 
@@ -30,6 +35,7 @@ information an institution actually needs survived transcription.
 |---|---|--:|--:|--:|--:|--:|--:|
 | `sahara` | yoruba | 25 | 57.5 | 57.4 | 38.6 | 33.3 | 52.8 |
 | `whisper_large_v3` | yoruba | 25 | 87.8 | 87.8 | 49.5 | 100.0 | 13.9 |
+| `whisper_small` | yoruba | 25 | 103.2 | 103.2 | 89.0 | 33.3 | 0.0 |
 
 ## By code-mixing band
 
@@ -41,6 +47,9 @@ information an institution actually needs survived transcription.
 | `whisper_large_v3` | high | 9 | 79.7 | 79.7 | 43.4 | 100.0 | 27.3 |
 | `whisper_large_v3` | low | 9 | 91.9 | 91.9 | 57.7 | - | 14.3 |
 | `whisper_large_v3` | medium | 7 | 93.0 | 93.0 | 46.4 | 100.0 | 0.0 |
+| `whisper_small` | high | 9 | 97.8 | 97.8 | 77.1 | 0.0 | 0.0 |
+| `whisper_small` | low | 9 | 101.2 | 101.2 | 97.1 | - | 0.0 |
+| `whisper_small` | medium | 7 | 113.4 | 113.4 | 95.1 | 100.0 | 0.0 |
 
 ## By noise condition
 
@@ -48,3 +57,4 @@ information an institution actually needs survived transcription.
 |---|---|--:|--:|--:|--:|--:|--:|
 | `sahara` | unknown | 25 | 57.5 | 57.4 | 38.6 | 33.3 | 52.8 |
 | `whisper_large_v3` | unknown | 25 | 87.8 | 87.8 | 49.5 | 100.0 | 13.9 |
+| `whisper_small` | unknown | 25 | 103.2 | 103.2 | 89.0 | 33.3 | 0.0 |
