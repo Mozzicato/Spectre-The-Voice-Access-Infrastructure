@@ -133,6 +133,9 @@ def build_afriswitch(languages: list[str], per_language: int, out: Path) -> Path
                 print(f"  {cfg}: {taken}/{per_language}")
 
         print(f"[afriswitch] {cfg}: {taken} clips")
+        # Write after every language. A stall on one config (Hausa stalled for ~40 min
+        # during development) would otherwise throw away every clip already fetched.
+        _write_manifest(rows, out)
 
     return _write_manifest(rows, out)
 

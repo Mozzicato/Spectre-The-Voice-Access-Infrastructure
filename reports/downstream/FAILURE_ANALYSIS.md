@@ -36,30 +36,34 @@ dropped zero the same as a dropped filler word.
 | Scenario | Expected | `sahara` | `whisper_large_v3` |
 |---|---|--:|--:|
 | `fin_01` | 2 | 2/2 | 2/2 |
-| `fin_02` | 1 | 1/1 | 1/1 |
-| `fin_03` | 2 | 2/2 | 2/2 |
+| `fin_02` | 1 | 1/1 | 1/1 (+2 spurious) |
+| `fin_03` | 2 | 2/2 (+1 spurious) | 2/2 (+1 spurious) |
 | `fin_04` | 3 | 1/3 ❌ | 3/3 |
 | `fin_05` | 1 | 1/1 | 1/1 |
 | `fin_06` | 1 | 1/1 | 1/1 |
 | `legal_01` | 2 | 2/2 | 2/2 |
-| `legal_02` | 1 | 1/1 | 1/1 |
-| `legal_03` | 1 | 1/1 | 1/1 |
+| `legal_02` | 1 | 1/1 (+1 spurious) | 1/1 |
+| `legal_03` | 1 | 1/1 (+1 spurious) | 1/1 (+1 spurious) |
 | `legal_04` | 4 | 4/4 | 4/4 |
-| `legal_05` | 3 | 3/3 | 2/3 ❌ |
+| `legal_05` | 3 | 3/3 (+1 spurious) | 2/3 ❌ |
 | `legal_06` | 2 | 2/2 | 1/2 ❌ |
 | `pub_01` | 3 | 3/3 | 1/3 ❌ |
-| `pub_02` | 2 | 2/2 | 1/2 ❌ |
-| `pub_03` | 1 | 1/1 | 1/1 |
+| `pub_02` | 2 | 2/2 (+1 spurious) | 1/2 ❌ |
+| `pub_03` | 1 | 1/1 (+1 spurious) | 1/1 (+1 spurious) |
 | `pub_04` | 2 | 2/2 | 2/2 |
 | `pub_05` | 3 | 3/3 | 1/3 ❌ |
-| `pub_06` | 4 | 4/4 | 3/4 ❌ |
+| `pub_06` | 4 | 4/4 (+1 spurious) | 3/4 ❌ |
+
+*`+n spurious` = negations the model added that the speaker did not say. These invert meaning and are counted separately, because preservation alone would score an invented negation as a success.*
+
+> **Caveat on the spurious counts.** Negation is detected with a marker lexicon that includes short particles (`ko`, `ma`, `ba`, `no`). These are genuine negators in Yoruba, Igbo, Hausa and Pidgin, but they also occur as ordinary syllables — Yoruba `ba mi` ("help me") is counted as a negation by this detector. Some portion of the spurious counts is therefore the detector over-firing rather than a model hallucinating. The *preserved* counts are the more reliable column; the spurious column is a flag for manual review, not a precise error rate.
 
 ## Totals
 
-| Model | Amounts | Reference numbers | Negation |
-|---|--:|--:|--:|
-| `sahara` | 10/17 (58.8%) | 1/1 (100.0%) | 36/38 (94.7%) |
-| `whisper_large_v3` | 16/17 (94.1%) | 1/1 (100.0%) | 30/38 (78.9%) |
+| Model | Amounts | Reference numbers | Negation kept | Negation invented |
+|---|--:|--:|--:|--:|
+| `sahara` | 10/17 (58.8%) | 1/1 (100.0%) | 36/38 (94.7%) | 7 |
+| `whisper_large_v3` | 16/17 (94.1%) | 1/1 (100.0%) | 30/38 (78.9%) | 5 |
 
 ## Why this drives a product decision
 

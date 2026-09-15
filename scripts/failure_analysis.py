@@ -124,20 +124,47 @@ def main() -> None:
             continue
         cells = []
         for m in names:
-            kept = min(negation_markers(models[m].get(aid, "")), expected)
+            found = negation_markers(models[m].get(aid, ""))
+            kept = min(found, expected)
+            # A model can also INVENT a negation. Whisper renders the Pidgin perfective
+            # "i don do the transfer" as "i don't do the transfer", which inverts the
+            # claim. Counting only preserved negations scores that as a success and can
+            # let a spurious negation mask a dropped one, so surplus is tracked too.
+            added = max(0, found - expected)
             totals[m]["neg"][0] += kept
             totals[m]["neg"][1] += expected
+            totals[m]["neg_added"] = totals[m].get("neg_added", 0) + added
             mark = "" if kept == expected else " ❌"
-            cells.append(f"{kept}/{expected}{mark}")
+            extra = f" (+{added} spurious)" if added else ""
+            cells.append(f"{kept}/{expected}{mark}{extra}")
         lines.append(f"| `{scen}` | {expected} | " + " | ".join(cells) + " |")
 
+    lines += [
+        "",
+        "*`+n spurious` = negations the model added that the speaker did not say. These "
+        "invert meaning and are counted separately, because preservation alone would "
+        "score an invented negation as a success.*",
+        "",
+        "> **Caveat on the spurious counts.** Negation is detected with a marker lexicon "
+        "that includes short particles (`ko`, `ma`, `ba`, `no`). These are genuine "
+        "negators in Yoruba, Igbo, Hausa and Pidgin, but they also occur as ordinary "
+        "syllables — Yoruba `ba mi` (\"help me\") is counted as a negation by this "
+        "detector. Some portion of the spurious counts is therefore the detector "
+        "over-firing rather than a model hallucinating. The *preserved* counts are the "
+        "more reliable column; the spurious column is a flag for manual review, not a "
+        "precise error rate.",
+    ]
+
     lines += ["", "## Totals", "",
-              "| Model | Amounts | Reference numbers | Negation |", "|---|--:|--:|--:|"]
+              "| Model | Amounts | Reference numbers | Negation kept | Negation invented |",
+              "|---|--:|--:|--:|--:|"]
     for m in names:
         row = []
         for key in ("amt", "ref", "neg"):
             hit, tot = totals[m][key]
             row.append(f"{hit}/{tot} ({hit / tot * 100:.1f}%)" if tot else "-")
+        added = totals[m].get("neg_added", 0)
+        row.append(f"{added}" if added else "0")
         lines.append(f"| `{m}` | " + " | ".join(row) + " |")
 
     lines += [
