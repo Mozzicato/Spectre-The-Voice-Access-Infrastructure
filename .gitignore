@@ -17,3 +17,6 @@ benchmark/results/*.csv
 reports/*.csv
 models/
 *.log
+
+# original un-normalized recordings (duplicates of the normalized copies)
+data/demo/audio/sahara/
